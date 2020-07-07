@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="baidu-site-verification" content="vvVgSQUzPU" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1"
+    />
+    <meta name="keywords" content="虎虎|博客|个人|utone|Utone|">
+    <meta name="description" content="骑士恨煎蛋，骑士恨孜然">
+    
+    <title>
+       行业知识图谱构建从小白到毕业——流水账式全记录 -  Hexo
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+ 
+    
+      <link rel="icon" href="/images/favicon.ico" />
+    
+  <meta name="generator" content="Hexo 4.2.1"></head>
+  <body>
+    <div id="container">
+      <div id="main-left">
+        <div id="introduce">
+          <div class="logo-worp">
+            <a href="/"><img class="logo" src="/images/logo.png" alt=""/></a>
+          </div>
+          <ul>
+            
+              <li><a href="/"> Home </a></li>
+            
+              <li><a href="/archives"> Archive </a></li>
+            
+              <li><a href="/about"> About </a></li>
+            
+              <li><a href="/atom.xml"> RSS </a></li>
+            
+            <li>
+              <img id="search-img" src="/images/search.svg" alt="search" />
+            </li>
+          </ul>
+           
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#定题2-0"><span class="post-toc-number">1.</span> <span class="post-toc-text">定题2.0</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#知识图谱入门"><span class="post-toc-number">2.</span> <span class="post-toc-text">知识图谱入门</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#大致规划"><span class="post-toc-number">3.</span> <span class="post-toc-text">大致规划</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#查找资料"><span class="post-toc-number">4.</span> <span class="post-toc-text">查找资料</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#坑1：想导入一个开源知识图谱到Neo4j中看看效果"><span class="post-toc-number">4.1.</span> <span class="post-toc-text">坑1：想导入一个开源知识图谱到Neo4j中看看效果</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#坑2：我又看到一篇博客"><span class="post-toc-number">4.2.</span> <span class="post-toc-text">坑2：我又看到一篇博客</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#坑3：找到了非常类似的项目"><span class="post-toc-number">4.3.</span> <span class="post-toc-text">坑3：找到了非常类似的项目</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#坑4：找到了非常好又基础的知识图谱课程（12-4-12-5）"><span class="post-toc-number">4.4.</span> <span class="post-toc-text">坑4：找到了非常好又基础的知识图谱课程（12.4-12.5）</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#坑5：看前沿论文（12-7-12-10）"><span class="post-toc-number">4.5.</span> <span class="post-toc-text">坑5：看前沿论文（12.7-12.10）</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#定题和开题报告ppt制作-12-10-1-3"><span class="post-toc-number">5.</span> <span class="post-toc-text">定题和开题报告ppt制作(12.10-1.3)</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#坑6：科学知识图谱"><span class="post-toc-number">5.1.</span> <span class="post-toc-text">坑6：科学知识图谱</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#坑7：开放域知识图谱"><span class="post-toc-number">5.2.</span> <span class="post-toc-text">坑7：开放域知识图谱</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#坑8：知识融合"><span class="post-toc-number">5.3.</span> <span class="post-toc-text">坑8：知识融合</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#结论"><span class="post-toc-number">5.4.</span> <span class="post-toc-text">结论</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#论文调研"><span class="post-toc-number">5.5.</span> <span class="post-toc-text">论文调研</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#项目调研-1-3-1-5"><span class="post-toc-number">6.</span> <span class="post-toc-text">项目调研(1.3-1.5)</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#项目纠结"><span class="post-toc-number">6.1.</span> <span class="post-toc-text">项目纠结</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#正式开题-1-7-1-10"><span class="post-toc-number">7.</span> <span class="post-toc-text">正式开题(1.7-1.10)</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#调整开题报告-1-12-1-15"><span class="post-toc-number">8.</span> <span class="post-toc-text">调整开题报告(1.12-1.15)</span></a></li></ol> 
+          
+        </div>
+      </div>
+      <div id="main-right"><div id="post">
+    
+    <header class="article-header">
+        <h1>
+            行业知识图谱构建从小白到毕业——流水账式全记录
+        </h1>
+    </header>
+    
+    <div class="post-meta">
+        <time class="post-data" datetime="2019-12-01T10:24:43.000Z" itemprop="datePublished">
+            2019-12-01
+        </time>
+        
+        
+        <ul class="post-tag-list" itemprop="keywords"><li class="post-tag-list-item"><a class="post-tag-list-link" href="/tags/hide/" rel="tag">hide</a><span class="post-tag-list-count">6</span></li></ul>
+        
+    </div>
+    
+    <div class="post-entry">
+        <h2 id="定题2-0"><a href="#定题2-0" class="headerlink" title="定题2.0"></a>定题2.0</h2><p>找过导师谈过以后，加上自己之前想做的方向，重新决定了研究方向：知识图谱+hadoop大数据处理技术</p>
+<h2 id="知识图谱入门"><a href="#知识图谱入门" class="headerlink" title="知识图谱入门"></a>知识图谱入门</h2><p>之前听过一个电台，有个行业大佬推荐了王昊奋老师的知识图谱课程，于是从王老师的课程开始入门。听课的过程挺痛苦的，让我想起了被“听不懂”支配的研一一年。但是通过一遍一遍地听、听不懂的去百度还是学下来了。因为我目前只需要做到构建出一个行业知识图谱的步骤，所以听到第六课“知识融合”后面就没听了。王老师的课还是挺经典的，覆盖面也很广，让我对构建知识图谱的整个流程和相关工具和技术有了一些认识，后来看到各种各样的专有名词的时候也亲切了一些。</p>
+<h2 id="大致规划"><a href="#大致规划" class="headerlink" title="大致规划"></a>大致规划</h2><p>在知识图谱的构建流程中：知识抽取、知识挖掘、知识存储、知识融合（还有整体的流程架构也许也是一个方向），我把最不感兴趣的知识存储排除在外，直觉告诉这个方向我没什么好研究的，很多技术拿来就用就行了。<br>除了以上流程，前后期还有几个操作步骤：数据库的选择、数据模型的制定、爬取数据、数据可视化。<br>确定大致步骤以后就是通过初步的实验进一步了解自己要研究的东西，实验的过程中卡在哪就从哪开始学。</p>
+<p><strong><em>一些简单想法</em></strong></p>
+<p><em>在看各种各样的博客的过程中，我时不时有一些简单的想法，记录在下面：</em><br><em>1. 做一个实时增量的知识图谱，可实时融合新的数据，但这个新的数据通过什么方式输入系统是个问题；新旧知识的取舍也是个问题，实体链接、本体对齐和置信度。</em><br><em>2. 为了能和spark等大数据处理技术融合，希望尽量使用机器学习的技术（和需求驱动的思想相违背了，但是毕竟是为了提升自己）</em><br><em>3. 面向主题的知识图谱，方便不同业务人员的操作</em><br><em>4. 使用树结构来表示句子，可通过剪枝的方式缩写句子再向量化进行相似度对比，还可以和基于模板的方法结合</em><br><em>5. 半监督和集成学习、joint方法还有很多可研究的</em></p>
+<h2 id="查找资料"><a href="#查找资料" class="headerlink" title="查找资料"></a>查找资料</h2><p>查找资料的过程中掉入了很多的坑，有的坑深有的坑浅，有的坑是个地道捷径，有的坑爬出来还在原点</p>
+<h3 id="坑1：想导入一个开源知识图谱到Neo4j中看看效果"><a href="#坑1：想导入一个开源知识图谱到Neo4j中看看效果" class="headerlink" title="坑1：想导入一个开源知识图谱到Neo4j中看看效果"></a>坑1：想导入一个开源知识图谱到Neo4j中看看效果</h3><p>我看到openkg中有的数据是json格式的，就找了很久怎么把json文件导到neo4j中转化成知识图谱，后来发现，json格式本来就是一种知识图谱的序列化格式，我追求的只是它的可视化而已……</p>
+<p>知识图谱说的是一种数据模型，它的存储方式有很多种，图数据库也并不是存成一个图，neo4j也只是提供了图数据的可视化而已。数据的真实存储方式还是序列化的。<br>可视化使得我们能够直观地看到数据库的规模、内容等，仅可以作为一个展示和检验评估的工具，而不是判定这个数据是不是图数据的标准。<br>让我们反推一下，想要得到可视化效果，首先要得到csv文件，要得到怎样的csv文件呢？我发现我对Neo4j一无所知。我需要好好学一下Neo4j。</p>
+<h3 id="坑2：我又看到一篇博客"><a href="#坑2：我又看到一篇博客" class="headerlink" title="坑2：我又看到一篇博客"></a>坑2：我又看到一篇博客</h3><p><a href="https://blog.csdn.net/eastmount/article/details/86714051" target="_blank" rel="noopener">Eastmount的知识图谱实战篇</a><br>文中提到<a href="https://study.163.com/course/courseLearn.htm?courseId=1003528010" target="_blank" rel="noopener">星球系列电影</a>这个课程。嗯？好东西！我以前怎么没想到会有这样的课程呢？自己琢磨能琢磨出啥，我又不是大佬……</p>
+<h3 id="坑3：找到了非常类似的项目"><a href="#坑3：找到了非常类似的项目" class="headerlink" title="坑3：找到了非常类似的项目"></a>坑3：找到了非常类似的项目</h3><p>虽然这个课程偏重于可视化不是我要的课程，但是这个给了我一个启发，我在b站和网易云课程上又搜了一下知识图谱的实战课程，发现一个汽车知识图谱实战项目课程，在它的评论中看到一条评论说这个是仿照他们做的农业知识图谱做的但是只是改成了汽车的，我又点进那条评论给的github网址……我！的！马！鸭！“…上海市…《上海农业农村大数据共享服务平台建设和应用》…构建面向智慧农业的知识图谱及其应用系统…”这就是我要找的！</p>
+<h3 id="坑4：找到了非常好又基础的知识图谱课程（12-4-12-5）"><a href="#坑4：找到了非常好又基础的知识图谱课程（12-4-12-5）" class="headerlink" title="坑4：找到了非常好又基础的知识图谱课程（12.4-12.5）"></a>坑4：找到了非常好又基础的知识图谱课程（12.4-12.5）</h3><p>汽车知识图谱那个太偏实际使用化，完全没有我想要获取的知识。于是我在某站上按“知识图谱”搜了一下实战课程，找到了一个一百多节课的课程，其中讲算法老师讲的很好，声音又好听，我很少遇到我听了不开小差的课，这就是其中之一。我选了其中的算法和理论课程听完后，觉得受益匪浅，这个坑跳得值。</p>
+<h3 id="坑5：看前沿论文（12-7-12-10）"><a href="#坑5：看前沿论文（12-7-12-10）" class="headerlink" title="坑5：看前沿论文（12.7-12.10）"></a>坑5：看前沿论文（12.7-12.10）</h3><p>我知道光看课程是不够的，实战课老师毕竟讲的还是已经普遍流行了的算法，老师对我的帮助又有限，我需要看一些前沿论文才不至于研究别人已经研究出来了的东西……为了加快进程，我决定先选近两年的综述类文章看。看了几篇综述类文章后，我清晰地认识到在听课的过程中我脑海中想到的方法基本早就被别人研究过了……嗯，暂时只有这些沮丧的收获。再加上最近迷上健身，晚上学习的时间从四个小时缩减成两个小时</p>
+<h2 id="定题和开题报告ppt制作-12-10-1-3"><a href="#定题和开题报告ppt制作-12-10-1-3" class="headerlink" title="定题和开题报告ppt制作(12.10-1.3)"></a>定题和开题报告ppt制作(12.10-1.3)</h2><p>已经12.10了，中下旬就要开题，再不开始做ppt实验和报告就可以直接辍学去挣钱了，为了让自己穷下去，我总结了一下目前已知的知识感兴趣的方向和遇到的问题，初步定了个题目：<strong>《基于半监督学习的领域实体关系抽取方法》</strong>（我对半监督学习真的是情有独钟……）。 我从师姐那里要来了开题报告的规定提纲，准备一个标题一个标题来准备以及阅读论文。</p>
+<p>1、    选题的背景及意义<br>        王昊奋第1课、第11课ppt<br>        说清楚要解决什么问题，知识图谱的重要性，行业知识图谱的重要性，关系抽取的重要性</p>
+<p>2、    国内外本学科领域的发展现状与趋势<br>3、    课题主要研究内容、预期目标<br>4、    拟采用的研究方法、技术路线、实验方案及其可行性分析<br>5、    已有研究基础与所需的研究条件<br>6、    研究工作计划与进度安排<br>7、    参考文献</p>
+<p>要求：既不要让老师觉得你在给他讲课，又要让老师比较简单地get到我在说什么。</p>
+<h3 id="坑6：科学知识图谱"><a href="#坑6：科学知识图谱" class="headerlink" title="坑6：科学知识图谱"></a>坑6：科学知识图谱</h3><p>在找论文的过程中，我看到了一个名词：科学知识图谱，好像和我要做的东西很像，我之前居然一直不知道这个名词的存在，后来一看维基百科，并不一样：<a href="https://zh.wikipedia.org/wiki/%E7%A7%91%E5%AD%A6%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1" target="_blank" rel="noopener">科学知识图谱</a>。</p>
+<h3 id="坑7：开放域知识图谱"><a href="#坑7：开放域知识图谱" class="headerlink" title="坑7：开放域知识图谱"></a>坑7：开放域知识图谱</h3><p>我不知道从哪里又看到一个开放域知识图谱的概念，2007年提出的好像有的研究，我屁颠屁颠的了解了一下，发现开放域和领域是平行的……那可是半监督就是开放域关系抽取的方法之一啊，那半监督还能用来搞领域知识图谱吗？</p>
+<h3 id="坑8：知识融合"><a href="#坑8：知识融合" class="headerlink" title="坑8：知识融合"></a>坑8：知识融合</h3><p>看各种论文的过程中，我感觉知识融合好像很有的研究，再加上我发现三元组要变成知识图谱是一定要经过知识融合这一步的，而且我想做的增量更新也是知识融合的部分，然后开始纠结要不要改方向改成知识融合……因为研究了这么久突然想改导致我很烦躁，烦躁了一个周末以后，周一晚上勇敢面对问题开始找知识融合的论文看，然后一个晚上就被劝退了。。。。。我比较熟悉的机器学习的方法在知识融合中基本已经过时了，现在大部分是在用知识表示的方法，这方面数学公式超多，要求比较高的数学功底（而且李攀成的《公共安全领域知识图谱的知识融合技术研究》把我想到的没想到的方向和内容都研究的明明白白，我还看不懂……我干嘛，何必呢），我……死心了</p>
+<h3 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h3><p>最后终于还是把题目定下了：《基于深度神经网络的领域关系抽取方法及其实现》，还没给老师看过，估计要改。<br>制作ppt的过程太投入忘记记录博客了，大概就是先把自己要说的话写了个演讲稿，再根据演讲稿制作的ppt，第二部分发展现状看了一些论文，其中有一篇叫《基于深度学习框架的实体关系抽取研究进展》真的是神仙下凡，把近年的关系抽取上深度学习方法的发展讲的明明白白完完整整，我从这篇论文出发大致看了一下提到的一些论文，了解了一些较为前沿的方法和方向，最终才定下的这个题目。</p>
+<h3 id="论文调研"><a href="#论文调研" class="headerlink" title="论文调研"></a>论文调研</h3><p>突然被通知我们实验室要先交开题报告word版……没事开题时间定在1.10还有时间，我开始从之前写的演讲稿开始扩展编辑开题报告，刚开始很抗拒，第一章卡在方向问题上一个字也编不出来……后来慢慢想开了，先用白话写了一些再慢慢改成书面语就会轻松一些。第二、三、四章很轻松，得益于之前写的演讲稿直接复制粘贴扩展毫无压力。第五章我就蒙了，我哪有什么研究基础，也不知道自己需要什么研究条件也不敢随便提……这里我先跳过第五章决定和老师聊过再写。第六章我再次懵逼……我之前看论文都只看他们用了什么模型但是没看细节，对工作流程我一窍不通，于是决定看一下这些论文的实现细节。之后，才完成了开题报告的初步写作。</p>
+<h2 id="项目调研-1-3-1-5"><a href="#项目调研-1-3-1-5" class="headerlink" title="项目调研(1.3-1.5)"></a>项目调研(1.3-1.5)</h2><p>写好了开题报告后，因为之前老师跟我说的项目还没定下来，于是去找导师问了问，顺便拿开题报告给导师看，导师说之前申请的项目还没有定下来，但是开题报告上要写上落地项目，而我恰巧知道公司有个项目是用到知识图谱的，我有个师兄刚好在做，于是提出问问那个师兄关于这个项目的事。</p>
+<h3 id="项目纠结"><a href="#项目纠结" class="headerlink" title="项目纠结"></a>项目纠结</h3><p>通过师兄了解了这个项目，各方面都挺适合我的，这个项目分两期，一期接触到了我以后想要从事的大数据存储与处理技术，二期是基于一期已完成的基础上建设的，需要构建一个知识图谱，还需要用到深度神经网络进行图像识别，而且师兄还一直跟我强调包吃住还有一天一百，一切看起来都太完美了。但是，这反而令我不那么放心，因为师兄，太热情了，我发一条他回五条，让我有一种浓浓的传销既视感……<br>之后看过师兄发给我的合同，我逐渐明白这种既视感来自哪里：</p>
+<ol>
+<li>大数据处理方面我的同事最近已经在学了，之前师兄说过他不愿意做这一部分，很可能这部分不是我师兄在做，而是我公司的同事在做，那我跟着师兄去出差可能会反而接触不到这些技术；</li>
+<li>师兄说他跟着美国芝加哥谷歌团队的一个学生在做，什么意思，这个人带着我师兄在做，我师兄又带着我做，那分配到我手上的工作是不是已经很不核心了；</li>
+<li>动态特征选择很符合我，但是他们用的是事件聚类，主要是舆情应急处理系统用到知识图谱这一方面，主要是做事件追踪，是不是做事件抽取的？</li>
+<li>我们到底是一期还是二期</li>
+<li>师兄是做开发还是实施啊？知识图谱还是图像识别？现阶段有没有开始这个项目啊？我不会又把自己送去做实施了吧……这个项目还有很多的业务系统，我不想做，我可以不做吗，等我到了贵州，我可以做我想做的事吗，到那个时候我再说辞职，还来得及吗</li>
+<li>知识图谱并没有和深度学习结合，深度学习是用来做图像识别的，也有道理，深度学习用在知识图谱，可能他们觉得没这个必要，很可能用的是很基础的模板匹配……</li>
+<li>师兄说一天100，一月30天，为什么呢，难道周六周末也要上班吗？加班情况如何，我有时间写自己的论文吗，还有那边有女孩子吗……</li>
+</ol>
+<p>基于这些问题，我打算先看一下师兄之前要下的论文，再问一下师兄。</p>
+<ol>
+<li>知识图谱将用到哪些技术们能不能用到深度学习，不会就是评论转发两种关系吧，那和我的论文完全没关系，而且我也没时间改了</li>
+<li>我能不能接触到大数据处理</li>
+<li>什么谷歌的学生</li>
+<li>师兄主要负责哪一块，知识图谱还是图像识别？还是业务系统还是实施？我去了以后是跟着做这一块吗</li>
+<li>加班情况</li>
+</ol>
+<p>问过以后，我还真的不想去了……总而言之最终和师兄说了我不去。</p>
+<h2 id="正式开题-1-7-1-10"><a href="#正式开题-1-7-1-10" class="headerlink" title="正式开题(1.7-1.10)"></a>正式开题(1.7-1.10)</h2><p>背了几天演讲稿，开题那天还是没有做到很满意，还是在死记硬背好像没有做到流畅的信息输出，反观师兄师姐他们的汇报就很自然（有一个老师，举手投足之间都很像我爷爷，而且他说话也很有学者的感觉，还很谦逊，被圈粉^.^）。老师们给了我一些建议，主要有两点：</p>
+<ol>
+<li>题目需要体现知识图谱</li>
+<li>需要更多的文献调研，说清楚他们的方法有什么问题，我的工作有什么意义，而不是撞别人的优点上</li>
+</ol>
+<p>我打算，在放假之前再好好看看论文，把开题报告再改改。放假之后好好学hadoop、spark、kafka等，为什么要学这些呢，我有预感明年项目组可能会接触到这些。（后来我同事跟我说我所在的项目组并没有这方面的能力，我上司的意思是让我一个人做试试看，我的同事还建议我出去找实习，但是我的导师不让我们自己出去找实习，所以我之后可能还是会辞职，要早日开始练习笔试和code了……）</p>
+<h2 id="调整开题报告-1-12-1-15"><a href="#调整开题报告-1-12-1-15" class="headerlink" title="调整开题报告(1.12-1.15)"></a>调整开题报告(1.12-1.15)</h2><p>老师之前给过我一个建议，看看深度学习有什么在别的领域使用过的方法，引入到关系抽取领域中，深度学习有哪些方法我都忘了，这几天看的又都是有关关系抽取的论文，于是我打算这几天看看研一学的深度学习课件，可能会有所启发吧。再把别人方法的缺点和没解决的问题整理一下，在这个基础上去做我自己的工作。</p>
+<p>看PPT的过程中其实脑子里跳出来很多想法，但是心理阴影告诉我很可能别人已经做过了，所以我有必要花时间把所有关系抽取相关的论文都找出来看，尤其是每个我想引入的方法被提出以后发表的。</p>
+<p>看完以后发现了几个想法：RCNN的联合训练思想、胶囊网络、k-means、PCA降维特征向量。其中胶囊网络比较新，而且它的思想也很适合做关系抽取，但之前已有人做过了，而且我改了论文交上去，导师建议我不要做，说硕士做胶囊网络有难度，于是又改回LSTM和CNN，只说要做联合训练。</p>
+<p>到此，开题报告就结束了。</p>
+
+    </div>
+    <!--畅言PC和WAP自适应版-->
+  
+</div></div>
+    </div>
+    <div id="footer">骑士恨煎蛋，骑士恨孜然</div>
+    <img id="top" src="/images/up-circle.svg" alt="top" />
+    
+  </body>
+</html>
+<!-- 加载主题脚本文件 -->
+
+<script src="/scripts/utone.js"></script>
+
+
+<script type="text/javascript">
+  window.onload = function() {
+    scroll.init()
+    siteSearch.init()
+  }
+</script>
