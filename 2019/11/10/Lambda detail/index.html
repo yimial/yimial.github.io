@@ -1,213 +1,210 @@
 <!DOCTYPE html>
-<html>
-  <head>
-      <script>
-  var _hmt = _hmt || []
-  ;(function() {
-    var hm = document.createElement('script')
-    hm.src = 'https://hm.baidu.com/hm.js?5a0acc897fd96474a2c8f4deac84611a'
-    var s = document.getElementsByTagName('script')[0]
-    s.parentNode.insertBefore(hm, s)
-  })()
-</script> 
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-    <meta name="keywords" content="" />
-    <meta name="description" content="" />
-    
-    <title>
-      The Lambda architecture——principles for architecting realtime Big Data systems阅读笔记（翻译） - Hexo
-    </title>
-    <link rel="manifest" href="/manifest.json" />
-    <link rel="shortcut icon" href="/images/favicon.jpg" type="image/x-icon" />
-    
-<link rel="stylesheet" href="/style/style.css">
+<html lang="zh-CN">
 
-  <meta name="generator" content="Hexo 4.2.1"></head>
-  <body>
-    <canvas id='pagemap'></canvas>
-    
-    <div id="post-toc" class="animated hiddenToc hide">
-      <span class="title">Toc</span>
-      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#一、引言"><span class="toc-text">一、引言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二、Lambda架构分为三个层次"><span class="toc-text">二、Lambda架构分为三个层次</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-批处理层-Apache-Hadoop"><span class="toc-text">1.批处理层(Apache Hadoop)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-服务层-Cloudera-Impala"><span class="toc-text">2.服务层(Cloudera Impala)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-速度层"><span class="toc-text">3.速度层</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#三、思考"><span class="toc-text">三、思考</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#启发"><span class="toc-text">启发</span></a>
-    </div>
-    
-    <div id="fixed-menu-wrap">
-      <span class="iconfont icon-sousuo search-box menu-reset"></span>
-      <span class="icon-toc menu-reset">Toc</span>
-      <span class="iconfont icon-arrowup menu-reset"></span>
-    </div>
-    <div id="fixed-menu">
-      <span class="iconfont icon-menu-"></span>
-    </div>
-    <div id="progress">
-      <div class="line"></div>
-    </div>
-    <div id="search-shade" class="animated hiddenSearch hide">
-      <div class="input-wrap">
-        <span class="iconfont icon-sousuo search-box"></span>
-        <input type="text" placeholder="Search" />
-        <span class="iconfont icon-close"></span>
-      </div>
-      <div class="search-result">
-        <div class="meta">
-          <span><b id="result-count">0</b> results found</span>
-          <img src="/images/logo.jpeg" />
-        </div>
-        <ul id="result-box"></ul>
-      </div>
-    </div>
-    <div id="menu-mask" class="animated hideMenuMask hide">
-      <span class="iconfont icon-close"></span>
-      <div class="nav">
-        
-        <a href="/" class="">
-          Home
-        </a>
-        
-        <a href="/archives" class="">
-          Archives
-        </a>
-        
-        <a href="/categories" class="">
-          Categories
-        </a>
-        
-        <a href="/tags" class="">
-          Tags
-        </a>
-        
-        <a href="/friends" class="">
-          Friends
-        </a>
-        
-        <a href="/about" class="">
-          About
-        </a>
-        
-      </div>
-    </div>
-    <div id="header">
-      <div class="intro">
-        <a href="/" class="logo" style="background-image: url('/images/logo.jpeg')"></a>
-        <div class="author">执杭</div>
-      </div>
-      <div class="nav">
-        <span class="iconfont icon-menu menu-icon"></span>
-        <a href="#" class="search-box">
-          <span class="iconfont icon-sousuo"></span>
-        </a>
-      </div>
-    </div>
-    <div id="side" class="animated bounceInLeft">
-      <div class="shrink">
-        <a href="/" class="logo" style="background-image: url('/images/logo.jpeg')"></a>
-        <span class="iconfont icon-menu toggle-icon"></span>
-        <a href="#" class="search-box">
-          <span class="iconfont icon-sousuo"></span>
-        </a>
-      </div>
-      <div class="magnify">
-        <div class="about">
-          <div class="author">执杭</div>
-          <a href="/" class="logo" style="background-image: url('/images/logo.jpeg')"></a>
-        </div>
 
-        <div class="nav">
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="执杭">
+  <meta name="keywords" content="">
+  <title>The Lambda architecture——principles for architecting realtime Big Data systems阅读笔记（翻译） - Hexo</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/github-gist.min.css" />
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_yg9cfy8wd6.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_pjno9b9zyxs.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script  src="/js/utils.js" ></script>
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Fluid</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
           
-          <a href="/" class="">
-            Home
-          </a>
           
-          <a href="/archives" class="">
-            Archives
-          </a>
           
-          <a href="/categories" class="">
-            Categories
-          </a>
           
-          <a href="/tags" class="">
-            Tags
-          </a>
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
           
-          <a href="/friends" class="">
-            Friends
-          </a>
+        
           
-          <a href="/about" class="">
-            About
-          </a>
           
-          <a href="#" class="search-box">
-            <span class="iconfont icon-sousuo"></span>
-          </a>
-        </div>
-        <div class="bottom">
-          <div class="follow">
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" parallax=true
+         style="background: url('/img/post.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
             
-            <a href="https://github.com/shixiaohu2206" target="_block">
-              <span class="iconfont icon-github"></span>
-            </a>
-            
-            <a href="https://www.facebook.com/shi.xiaohu.5" target="_block">
-              <span class="iconfont icon-facebook"></span>
-            </a>
-            
-            <a href="https://www.instagram.com/shi_xiaohu/" target="_block">
-              <span class="iconfont icon-instagram"></span>
-            </a>
-             
-            <a href="/atom.xml" target="_block">
-              <span class="iconfont icon-rss"></span>
-            </a>
+              
+  <div class="mt-3 post-meta">
+    <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+    <time datetime="2019-11-10 21:45">
+      2019年11月10日 晚上
+    </time>
+  </div>
+
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      2k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      21
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
             
           </div>
+
+          
         </div>
       </div>
     </div>
-    <div id="container">
-      <div class="main animated bounceInRight delay-0.7s">
-        <article class="post-entry">
-    <div class="header">
+  </header>
+
+  <main>
+    
       
-      <div class="title">The Lambda architecture——principles for architecting realtime Big Data systems阅读笔记（翻译）</div>
-      <div class="meta">
-        <span class="item">
-          <span class="iconfont icon-time-circle"></span>
-          <span>2019/11/10</span>
-        </span>
 
-        
-          <span class="item leancloud-visitors" id="/2019/11/10/Lambda%20detail/" data-flag-title="The Lambda architecture——principles for architecting realtime Big Data systems阅读笔记（翻译）">
-            <span class="iconfont icon-eye1"></span>
-            <span class="leancloud-visitors-count"></span>
-          </span>
-        
-
-        
-        
-         
-          <span class="item">
-            <span class="iconfont icon-tag1"></span>
-            <span>
-                
-                  
-                    <a href="/tags/Lambda">Lambda</a>
-                  
-                
-                  
-                    <a href="/tags/大数据处理框架">大数据处理框架</a>
-                  
-                
-            </span>
-          </span>
-         
-      </div>
-      <div>
-      </div>
-    </div>
-    <html><head></head><body><p><strong>query = function(all data)</strong><br>本文介绍了Lambda架构的三个层的任务和特点，最后就Lambda各个设定的意义展开了思考</p>
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <div class="post-content mx-auto" id="post">
+            
+            <article class="markdown-body">
+              <html><head></head><body><p><strong>query = function(all data)</strong><br>本文介绍了Lambda架构的三个层的任务和特点，最后就Lambda各个设定的意义展开了思考</p>
 <h3 id="一、引言">一、引言<a class="post-anchor" href="#一、引言"></a></h3><p>Nathan Marz和James Warren合著的《大数据——可伸缩实时数据系统的原则和最佳实践》介绍了Lambda架构。Lambda是第一个真正将批处理和流处理协作解决无数用例的体系结构。  </p>
 <p><strong>Lambda架构的前提：</strong>可以对所有数据运行ac-hoc查询来获得结果，但是这样做资源开销很大。  </p>
 <p><em>ac-hoc查询：即席查询是指那些用户在使用系统时，根据自己当时的需求定义的查询。</em></p>
@@ -227,7 +224,7 @@
 <h4 id="3-速度层">3.速度层<a class="post-anchor" href="#3-速度层"></a></h4><p><strong>增量，对应批处理层的迭代计算</strong></p>
 <p>本质上，速度层与批处理层相同，它也使用接收到的数据计算视图。但速度层需要补偿批处理层的高延迟，它通过在Storm中计算实时视图来达到这个目的。实时视图<strong>只包含</strong>对批处理视图进行补充的增量结果。<br>批处理层从头开始不断地重新计算批处理视图，而速度层使用<strong>增量模型</strong>，当接收到新数据时，递增实时视图。</p>
 <p><strong>临时性，批处理层处理后即删除</strong></p>
-<p>临时性：speed层的聪明之处在于实时视图是瞬态的，一旦数据通过了批处理和服务层的处理，实时视图中的相应结果就可以丢弃。在书中，这被称为“复杂性隔离”，这意味着架构中最复杂的部分被推到结果是临时存在的层中。<br><a href="https://66.media.tumblr.com/18bde56255d7f692cf96311edba64cd1/04f815501c14a923-ac/s500x750/a6801f141738ab137db8d26188e7082a21175f86.png" target="_blank" rel="noopener" data-caption="临时性" data-fancybox="images"><img src="https://66.media.tumblr.com/18bde56255d7f692cf96311edba64cd1/04f815501c14a923-ac/s500x750/a6801f141738ab137db8d26188e7082a21175f86.png" alt="临时性"></a></p>
+<p>临时性：speed层的聪明之处在于实时视图是瞬态的，一旦数据通过了批处理和服务层的处理，实时视图中的相应结果就可以丢弃。在书中，这被称为“复杂性隔离”，这意味着架构中最复杂的部分被推到结果是临时存在的层中。<br><a href="https://66.media.tumblr.com/18bde56255d7f692cf96311edba64cd1/04f815501c14a923-ac/s500x750/a6801f141738ab137db8d26188e7082a21175f86.png" target="_blank" rel="noopener" data-caption="临时性" data-fancybox="images"><img src="https://66.media.tumblr.com/18bde56255d7f692cf96311edba64cd1/04f815501c14a923-ac/s500x750/a6801f141738ab137db8d26188e7082a21175f86.png" srcset="/img/loading.gif" alt="临时性"></a></p>
 <p><strong>Storm计算实时视图、HBase存储实时视图、Impala查询合并视图</strong></p>
 <p>最后一个难题是公开实时视图，以便对他们进行查询并与批处理视图<strong>合并</strong>，以获得完整的结果。由于实时视图是增量的，所以speed层需要随机读写，为此我们将使用Apache HBase。HBase为Storm提供了持续increment实时视图的能力，同时可以通过Impala查询与批处理视图的合并结果。<br>Impala既可以查询存储在HDFS中的批处理视图，又可以查询存储在HBase中的实时视图，这使得它成为完成这项任务的完美工具。</p>
 <h3 id="三、思考">三、思考<a class="post-anchor" href="#三、思考"></a></h3><p>Hadoop使得我们更方便地查询和更新数据。</p>
@@ -240,110 +237,250 @@
 <h2 id="启发">启发<a class="post-anchor" href="#启发"></a></h2><p>通过批处理视图迭代重计算+实时视图增量计算的方式，查询时拼接视图，使得系统架构可以更好的适用于这两种需求：满足容错性和实时性。</p>
 <p><a href="https://jameskinley.tumblr.com/post/37398560534/the-lambda-architecture-principles-for" target="_blank" rel="noopener">[1]James Kinley.The Lambda architecture——principles for architecting realtime Big Data systems</a><br>[这篇博客的源博客的源博客：How to beat the CAP theorem]（<a href="http://nathanmarz.com/blog/how-to-beat-the-cap-theorem.html）" target="_blank" rel="noopener">http://nathanmarz.com/blog/how-to-beat-the-cap-theorem.html）</a></p>
 </body></html>
+            </article>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Lambda/">Lambda</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86%E6%A1%86%E6%9E%B6/">大数据处理框架</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" target="_blank" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <div class="post-prev col-6">
+                    
+                    
+                      <a href="/2019/11/12/Questioning%20the%20Lambda%20Architecture/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Questioning the Lambda Architecture阅读笔记（翻译）</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </div>
+                  <div class="post-next col-6">
+                    
+                    
+                  </div>
+                </div>
+              
+            </div>
 
-  
-    <div class="post-reward">
-    <div id="reward-button">打赏</div>
-      <div id="qr">
-        <div class="wrap">
             
-            <div class="bg-wrap">
-              <a href="/images/zhifubao.jpg" target="_block" class="bg" style="background-image:url('/images/zhifubao.jpg')"></a>
-              支付宝
-            </div>
-            
-            
-            <div class="bg-wrap">
-                <a href="/images/weixin.jpg" target="_block" class="bg" style="background-image:url('/images/weixin.jpg')"></a>
-              微信
-            </div>
-            
+          </div>
         </div>
       </div>
     </div>
-  
-  <div class="post-guide">
-    <div class="item left">
-        
-          <a href="/2019/11/12/Questioning%20the%20Lambda%20Architecture/">Questioning the Lambda Architecture阅读笔记（翻译）</a>
-        
-    </div>
-    <div class="item right">
-        
-    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
   </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
 
   
-
-  <div class="post-copyright">
-    <div class="auth">
-      本文作者：<a href="http://yimial.github.io">执杭</a>
-    </div>
-    <div class="link">
-      永久链接：<a href="http://yimial.github.io/2019/11/10/Lambda%20detail/">http://yimial.github.io/2019/11/10/Lambda%20detail/</a>
-    </div>
-    <div class="declare">
-      版权声明：本文首发于<a href="http://yimial.github.io">执杭</a>的博客，转载请注明出处！
-    </div>
-  </div>
-
-  <div id="comment"></div>
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
 
   
-  
-</article>
-        <footer>
-          <div class="copyright">
-            ©2020
-            <a href="http://yimial.github.io">执杭</a> Powered by <a href="https://hexo.io" target="_blank" rel="noopener">Hexo</a> |
-            <a href="https://github.com/shixiaohu2206/hexo-theme-huhu" target="_blank" rel="noopener">hexo-theme-huhu</a>
-          </div>
-          
-        </footer>
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
       </div>
     </div>
-  </body>
+  </div>
+</div>
   
-</html>
-<script type="text/javascript">
-                  window.HUHU_CONFIG = JSON.parse("{\"share\":[\"weibo\",\"weixin\",\"qqkongjian\",\"QQ\",\"douban\",\"facebook\",\"twitter\",\"google\"],\"valine\":{\"API_ID\":\"\",\"API_KEY\":\"\"},\"service_worker\":{\"open\":false}}")
-                </script> <script type="text/javascript">window.addEventListener('load', function() {
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener">
+        <span>Fluid</span></a>
+    </div>
     
-    window.loadJs = function(d, m, a) {
-      var c = document.getElementsByTagName('head')[0] || document.head || document.documentElement
-      var b = document.createElement('script')
-      b.defer = true
-      b.setAttribute('type', 'text/javascript')
-      b.setAttribute('charset', 'UTF-8')
-      b.setAttribute('async', 'true')
-      b.setAttribute('src', d)
-      m && b.setAttribute('data-main', '/scripts/app-built')
-      if (typeof a === 'function') {
-        if (window.attachEvent) {
-          b.onreadystatechange = function() {
-            var e = b.readyState
-            if (e === 'loaded' || e === 'complete') {
-              b.onreadystatechange = null
-              a()
-            }
-          }
-        } else {
-          b.onload = a
-        }
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: 'article.markdown-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 0,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
       }
-      c.appendChild(b)
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "The Lambda architecture——principles for architecting realtime Big Data systems阅读笔记（翻译）&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
     }
-    window.loadJs && window.loadJs('https://cdn.bootcss.com/require.js/2.3.6/require.min.js', true, function() {require.config({"paths":{"util":"util","share":"share","search":"search","pagemap":"pagemap.min","registerSW":"registerSW","valine":"cdn/Valine.min","av":["https://cdn.jsdelivr.net/npm/leancloud-storage/dist/av-min"],"pjax":["https://cdn.bootcss.com/jquery.pjax/2.0.1/jquery.pjax.min"],"jquery":["https://cdn.bootcss.com/jquery/3.4.1/jquery.min"],"confirm":["https://cdn.bootcss.com/jquery-confirm/3.3.4/jquery-confirm.min"],"fancybox":["https://cdn.bootcss.com/fancybox/3.5.7/jquery.fancybox.min"],"chart":["https://cdn.bootcss.com/Chart.js/2.8.0-rc.1/Chart.bundle.min"]},"map":{"*":{"css":"https://cdn.bootcss.com/require-css/0.1.10/css.min.js"}},"shim":{"fancybox":{"deps":["css!https://cdn.bootcss.com/fancybox/3.5.7/jquery.fancybox.min.css"]},"confirm":{"deps":["css!https://cdn.bootcss.com/jquery-confirm/3.3.4/jquery-confirm.min.css"]},"chart":{"deps":["css!https://cdn.bootcss.com/Chart.js/2.8.0-rc.1/Chart.min.css"]}},"waitSeconds":3})})
-  })</script> <script type="text/javascript">
-                  ;(function() {
-                    var bp = document.createElement('script')
-                    var curProtocol = window.location.protocol.split(':')[0]
-                    if (curProtocol === 'https') {
-                      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js'
-                    } else {
-                      bp.src = 'http://push.zhanzhang.baidu.com/push.js'
-                    }
-                    var s = document.getElementsByTagName('script')[0]
-                    s.parentNode.insertBefore(bp, s)
-                  })()
-                </script> 
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

@@ -1,214 +1,211 @@
 <!DOCTYPE html>
-<html>
-  <head>
-      <script>
-  var _hmt = _hmt || []
-  ;(function() {
-    var hm = document.createElement('script')
-    hm.src = 'https://hm.baidu.com/hm.js?5a0acc897fd96474a2c8f4deac84611a'
-    var s = document.getElementsByTagName('script')[0]
-    s.parentNode.insertBefore(hm, s)
-  })()
-</script> 
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-    <meta name="keywords" content="" />
-    <meta name="description" content="" />
-    
-    <title>
-      Questioning the Lambda Architecture阅读笔记（翻译） - Hexo
-    </title>
-    <link rel="manifest" href="/manifest.json" />
-    <link rel="shortcut icon" href="/images/favicon.jpg" type="image/x-icon" />
-    
-<link rel="stylesheet" href="/style/style.css">
+<html lang="zh-CN">
 
-  <meta name="generator" content="Hexo 4.2.1"></head>
-  <body>
-    <canvas id='pagemap'></canvas>
-    
-    <div id="post-toc" class="animated hiddenToc hide">
-      <span class="title">Toc</span>
-      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#一、引言"><span class="toc-text">一、引言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二、Lambda的优点"><span class="toc-text">二、Lambda的优点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#三、Lambda的缺点"><span class="toc-text">三、Lambda的缺点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#四、作者的工作"><span class="toc-text">四、作者的工作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#五、替代方案"><span class="toc-text">五、替代方案</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#六、一些背景（Kafka）"><span class="toc-text">六、一些背景（Kafka）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#七、比较"><span class="toc-text">七、比较</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#启发"><span class="toc-text">启发</span></a>
-    </div>
-    
-    <div id="fixed-menu-wrap">
-      <span class="iconfont icon-sousuo search-box menu-reset"></span>
-      <span class="icon-toc menu-reset">Toc</span>
-      <span class="iconfont icon-arrowup menu-reset"></span>
-    </div>
-    <div id="fixed-menu">
-      <span class="iconfont icon-menu-"></span>
-    </div>
-    <div id="progress">
-      <div class="line"></div>
-    </div>
-    <div id="search-shade" class="animated hiddenSearch hide">
-      <div class="input-wrap">
-        <span class="iconfont icon-sousuo search-box"></span>
-        <input type="text" placeholder="Search" />
-        <span class="iconfont icon-close"></span>
-      </div>
-      <div class="search-result">
-        <div class="meta">
-          <span><b id="result-count">0</b> results found</span>
-          <img src="/images/logo.jpeg" />
-        </div>
-        <ul id="result-box"></ul>
-      </div>
-    </div>
-    <div id="menu-mask" class="animated hideMenuMask hide">
-      <span class="iconfont icon-close"></span>
-      <div class="nav">
-        
-        <a href="/" class="">
-          Home
-        </a>
-        
-        <a href="/archives" class="">
-          Archives
-        </a>
-        
-        <a href="/categories" class="">
-          Categories
-        </a>
-        
-        <a href="/tags" class="">
-          Tags
-        </a>
-        
-        <a href="/friends" class="">
-          Friends
-        </a>
-        
-        <a href="/about" class="">
-          About
-        </a>
-        
-      </div>
-    </div>
-    <div id="header">
-      <div class="intro">
-        <a href="/" class="logo" style="background-image: url('/images/logo.jpeg')"></a>
-        <div class="author">执杭</div>
-      </div>
-      <div class="nav">
-        <span class="iconfont icon-menu menu-icon"></span>
-        <a href="#" class="search-box">
-          <span class="iconfont icon-sousuo"></span>
-        </a>
-      </div>
-    </div>
-    <div id="side" class="animated bounceInLeft">
-      <div class="shrink">
-        <a href="/" class="logo" style="background-image: url('/images/logo.jpeg')"></a>
-        <span class="iconfont icon-menu toggle-icon"></span>
-        <a href="#" class="search-box">
-          <span class="iconfont icon-sousuo"></span>
-        </a>
-      </div>
-      <div class="magnify">
-        <div class="about">
-          <div class="author">执杭</div>
-          <a href="/" class="logo" style="background-image: url('/images/logo.jpeg')"></a>
-        </div>
 
-        <div class="nav">
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="执杭">
+  <meta name="keywords" content="">
+  <title>Questioning the Lambda Architecture阅读笔记（翻译） - Hexo</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/github-gist.min.css" />
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_yg9cfy8wd6.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_pjno9b9zyxs.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script  src="/js/utils.js" ></script>
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Fluid</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
           
-          <a href="/" class="">
-            Home
-          </a>
           
-          <a href="/archives" class="">
-            Archives
-          </a>
           
-          <a href="/categories" class="">
-            Categories
-          </a>
           
-          <a href="/tags" class="">
-            Tags
-          </a>
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
           
-          <a href="/friends" class="">
-            Friends
-          </a>
+        
           
-          <a href="/about" class="">
-            About
-          </a>
           
-          <a href="#" class="search-box">
-            <span class="iconfont icon-sousuo"></span>
-          </a>
-        </div>
-        <div class="bottom">
-          <div class="follow">
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" parallax=true
+         style="background: url('/img/post.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
             
-            <a href="https://github.com/shixiaohu2206" target="_block">
-              <span class="iconfont icon-github"></span>
-            </a>
-            
-            <a href="https://www.facebook.com/shi.xiaohu.5" target="_block">
-              <span class="iconfont icon-facebook"></span>
-            </a>
-            
-            <a href="https://www.instagram.com/shi_xiaohu/" target="_block">
-              <span class="iconfont icon-instagram"></span>
-            </a>
-             
-            <a href="/atom.xml" target="_block">
-              <span class="iconfont icon-rss"></span>
-            </a>
+              
+  <div class="mt-3 post-meta">
+    <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+    <time datetime="2019-11-12 20:42">
+      2019年11月12日 晚上
+    </time>
+  </div>
+
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      4.1k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      42
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
             
           </div>
+
+          
         </div>
       </div>
     </div>
-    <div id="container">
-      <div class="main animated bounceInRight delay-0.7s">
-        <article class="post-entry">
-    <div class="header">
+  </header>
+
+  <main>
+    
       
-      <div class="title">Questioning the Lambda Architecture阅读笔记（翻译）</div>
-      <div class="meta">
-        <span class="item">
-          <span class="iconfont icon-time-circle"></span>
-          <span>2019/11/12</span>
-        </span>
 
-        
-          <span class="item leancloud-visitors" id="/2019/11/12/Questioning%20the%20Lambda%20Architecture/" data-flag-title="Questioning the Lambda Architecture阅读笔记（翻译）">
-            <span class="iconfont icon-eye1"></span>
-            <span class="leancloud-visitors-count"></span>
-          </span>
-        
-
-        
-        
-         
-          <span class="item">
-            <span class="iconfont icon-tag1"></span>
-            <span>
-                
-                  
-                    <a href="/tags/Lambda">Lambda</a>
-                  
-                
-                  
-                    <a href="/tags/大数据">大数据</a>
-                  
-                
-            </span>
-          </span>
-         
-      </div>
-      <div>
-      </div>
-    </div>
-    <html><head></head><body><p><strong>Lambda架构有其优点，但值得探索其他替代方案。</strong><br>作者先介绍了一下Lambda系统，它的优点、缺点，以及替换方案</p>
-<h3 id="一、引言">一、引言<a class="post-anchor" href="#一、引言"></a></h3><p>Lambda架构是在MapReduce和Storm或类似系统上构建流处理应用程序的一种方法。<br><a href="https://dmgpayxepw99m.cloudfront.net/lambda-16338c9225c8e6b0c33a3f953133a4cb.png" target="_blank" rel="noopener" data-caption="The Lambda Architecture" data-fancybox="images"><img src="https://dmgpayxepw99m.cloudfront.net/lambda-16338c9225c8e6b0c33a3f953133a4cb.png" alt="The Lambda Architecture"></a></p>
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <div class="post-content mx-auto" id="post">
+            
+            <article class="markdown-body">
+              <html><head></head><body><p><strong>Lambda架构有其优点，但值得探索其他替代方案。</strong><br>作者先介绍了一下Lambda系统，它的优点、缺点，以及替换方案</p>
+<h3 id="一、引言">一、引言<a class="post-anchor" href="#一、引言"></a></h3><p>Lambda架构是在MapReduce和Storm或类似系统上构建流处理应用程序的一种方法。<br><a href="https://dmgpayxepw99m.cloudfront.net/lambda-16338c9225c8e6b0c33a3f953133a4cb.png" target="_blank" rel="noopener" data-caption="The Lambda Architecture" data-fancybox="images"><img src="https://dmgpayxepw99m.cloudfront.net/lambda-16338c9225c8e6b0c33a3f953133a4cb.png" srcset="/img/loading.gif" alt="The Lambda Architecture"></a></p>
 <p>其工作方式是捕获<strong>不可变</strong>的记录序列并并行地输入批处理系统和流处理系统。需要两次实现转换逻辑，一次在批处理系统中，一次在流处理系统中。在查询时将来自两个系统的结果<strong>拼接</strong>在一起，以生成完整的答案。</p>
 <p><em>Lambda系统：一个记录序列同时输入两个系统，批处理系统隔一段时间统一预计算一次，实时系统及时进行增量计算，当某一段记录在批处理统一计算时经过了批处理系统，即可在实时系统中删除这些记录的结果。查询到来时，将批处理视图和实时视图直接拼接合并就是最新的数据。<br>批处理视图存在HDFS中，实时视图存在HBase中，拼接后使用可以在这两个存储系统上查询的Impala进行查询</em></p>
 <p>这其中还可以有一些变化，比如换掉Storm、Kafka和Hadoop。人们通常使用两个不同的数据库来存储输出表，一个用于优化实时处理，另一个用于优化批量更新。</p>
@@ -229,13 +226,13 @@
 <h3 id="五、替代方案">五、替代方案<a class="post-anchor" href="#五、替代方案"></a></h3><p>作为一个设计基础设施的人，Jay Kreps认为最突出的问题是:<strong>为什么不能改进流处理系统来处理其目标领域的所有问题?</strong>为什么需要粘在另一个系统上?为什么不能同时进行实时处理和处理代码更改时的reprocessing?流处理系统已经有了并行的概念;为什么不通过增加并行度和非常快地重放历史来处理reprocessing呢?答案是，你可以这样做，我认为这实际上是一个合理的替代架构，如果你正在构建这种类型的系统。</p>
 <p>当我与人讨论这个问题时，他们有时告诉我，流处理不适合于处理高吞吐量的历史数据。但我认为这种直觉主要基于他们所使用的系统的局限性，这些系统要么伸缩性很差，要么无法保存历史数据。这让他们有一种感觉，流处理系统本质上是计算一些短暂流的结果，然后丢弃所有底层数据的东西。但没有理由认为只能这样。</p>
 <p>流处理中的基本抽象是数据流DAGs。DAG与传统数据仓库(la Volcano)中的底层抽象概念完全相同，也是MapReduce后续Tez中的底层抽象概念。流处理只是这个数据流模型的概况，它向最终用户公开中间结果的检查点和连续输出。<br><em>为什么说DAG和传统数据仓库底层抽象概念完全相同？这一段又是想说明什么？</em></p>
-<p>那么，我们如何直接从流处理工作中进行reprocessing呢?Jay Kreps喜欢的方法其实非常简单:<br>1.使用Kafka或其他系统，可以保留您希望能够重新处理的、允许多用户访问的数据的完整<strong>日志</strong>。例如，如果您希望重新处理最多30天的数据，请将Kafka的保留时间设置为30天。<br>2.当您要进行reprocessing时，启动流处理job的另一个实例，该job从保留数据的开始处开始处理，但将此输出数据定向到新的输出表。<br>3.当第二个job完成时，将应用程序切换为从新表读取。<br>4.停止旧版本的job，并删除旧的输出表。<br><a href="https://dmgpayxepw99m.cloudfront.net/kappa-61d0afc292912b61ce62517fa2bd4309.png" target="_blank" rel="noopener" data-caption="系统架构" data-fancybox="images"><img src="https://dmgpayxepw99m.cloudfront.net/kappa-61d0afc292912b61ce62517fa2bd4309.png" alt="系统架构"></a></p>
+<p>那么，我们如何直接从流处理工作中进行reprocessing呢?Jay Kreps喜欢的方法其实非常简单:<br>1.使用Kafka或其他系统，可以保留您希望能够重新处理的、允许多用户访问的数据的完整<strong>日志</strong>。例如，如果您希望重新处理最多30天的数据，请将Kafka的保留时间设置为30天。<br>2.当您要进行reprocessing时，启动流处理job的另一个实例，该job从保留数据的开始处开始处理，但将此输出数据定向到新的输出表。<br>3.当第二个job完成时，将应用程序切换为从新表读取。<br>4.停止旧版本的job，并删除旧的输出表。<br><a href="https://dmgpayxepw99m.cloudfront.net/kappa-61d0afc292912b61ce62517fa2bd4309.png" target="_blank" rel="noopener" data-caption="系统架构" data-fancybox="images"><img src="https://dmgpayxepw99m.cloudfront.net/kappa-61d0afc292912b61ce62517fa2bd4309.png" srcset="/img/loading.gif" alt="系统架构"></a></p>
 <p><em>那30天以前的数据呢？就不管了吗</em><br>与Lambda架构不同，在这种方法中，您只在处理代码更改时进行reprocessing并重新计算结果。当然，重新计算的job只是相同代码的改进版本，<strong>运行在相同的框架上，使用相同的输入数据</strong>。您会希望提高reprocessing job的并行性，以便它能够非常快地完成。</p>
 <p>也许我们可以称它为Kappa架构，尽管它太简单以至于只值得一个希腊字母。</p>
 <p><strong>撤回功能</strong><br>当然，您可以进一步优化它。一般情况下，您可以合并两个输出表。Jay Kreps认为有必要在短时间内同时拥有两者。这允许您通过一个将应用程序重定向到旧表的按钮来立即恢复到旧逻辑（<strong><em>撤回</em></strong>）。在特别重要的情况下(比如，您的广告目标标准)，您可以使用自动A/B测试或bandit算法来控制切换，以确保与之前的系统相比，您正在推出的任何bug修复或代码改进不会意外地降低性能。</p>
 <p><strong>HDFS和Kafka集成</strong><br>请注意，这并不意味着您的数据不能存到HDFS;这只是意味着你不会在那里进行reprocessing。Kafka与Hadoop有很好的集成，所以将任何Kafka主题镜像到HDFS中都很容易。可以将流处理作业的输出流甚至中间流用于Hadoop中的分析工具(如Hive)，或者用作其他离线数据处理流的输入。</p>
 <p>我们已经使用Samza实现了此方法以及其他reprocessing体系结构的变种。</p>
-<h3 id="六、一些背景（Kafka）">六、一些背景（Kafka）<a class="post-anchor" href="#六、一些背景（Kafka）"></a></h3><p>对于那些不太熟悉Kafka的人来说，我刚才所描述的可能没有意义。快速复习一下可能会把事情弄清楚。Kafka保持这样的有序日志:<br><em>知道你不早说</em><br><a href="https://dmgpayxepw99m.cloudfront.net/log-fa00884b8ef635ea9f32dc12180edd56.png" target="_blank" rel="noopener" data-caption="Kafka的日志" data-fancybox="images"><img src="https://dmgpayxepw99m.cloudfront.net/log-fa00884b8ef635ea9f32dc12180edd56.png" alt="Kafka的日志"></a>Kafka的“主题”是这些日志的集合：<br><a href="https://dmgpayxepw99m.cloudfront.net/partitioned_log-c74280b2059abf3b78d9bbddd657e0d7.png" target="_blank" rel="noopener" data-caption="Kafka的日志集" data-fancybox="images"><img src="https://dmgpayxepw99m.cloudfront.net/partitioned_log-c74280b2059abf3b78d9bbddd657e0d7.png" alt="Kafka的日志集"></a></p>
+<h3 id="六、一些背景（Kafka）">六、一些背景（Kafka）<a class="post-anchor" href="#六、一些背景（Kafka）"></a></h3><p>对于那些不太熟悉Kafka的人来说，我刚才所描述的可能没有意义。快速复习一下可能会把事情弄清楚。Kafka保持这样的有序日志:<br><em>知道你不早说</em><br><a href="https://dmgpayxepw99m.cloudfront.net/log-fa00884b8ef635ea9f32dc12180edd56.png" target="_blank" rel="noopener" data-caption="Kafka的日志" data-fancybox="images"><img src="https://dmgpayxepw99m.cloudfront.net/log-fa00884b8ef635ea9f32dc12180edd56.png" srcset="/img/loading.gif" alt="Kafka的日志"></a>Kafka的“主题”是这些日志的集合：<br><a href="https://dmgpayxepw99m.cloudfront.net/partitioned_log-c74280b2059abf3b78d9bbddd657e0d7.png" target="_blank" rel="noopener" data-caption="Kafka的日志集" data-fancybox="images"><img src="https://dmgpayxepw99m.cloudfront.net/partitioned_log-c74280b2059abf3b78d9bbddd657e0d7.png" srcset="/img/loading.gif" alt="Kafka的日志集"></a></p>
 <p>使用此数据的流处理器只维护一个“偏移量”，即它在每个分区上处理的<strong>最后一条</strong>记录的日志条目号。因此，<strong>更改使用者的位置</strong>以返回并重新处理数据非常简单，只需使用不同的偏移量重新启动作业即可。为相同的数据添加第二个使用者只是 <em>添加</em> 另一个指向日志中不同位置的读取器。<br><em>不管偏移量在哪，日志文件保持近三十天的内容不变，重启作业时，改作业顺着日志走到头。</em></p>
 <p>Kafka支持复制和容错，运行在廉价的普通硬件上，并且很乐意在每台机器上存储很多TBs数据。因此，保留大量数据是一种非常自然和经济的做法，不会影响性能。LinkedIn在网上保留了pb级的Kafka数据，许多应用程序都很好地利用了这种长时间的保留模式。</p>
 <p>廉价的消费和保留大量数据的能力使得添加第二个“reprocessing” job仅仅是<strong>启动代码的第二个实例</strong>，只是要从日志中的不同位置开始。<br><em>那日志没有保存的操作就不用重新执行了吗</em><br><em>刚好就很适合做流处理的reprocessing</em><br>这个设计不是偶然的。我们构建Kafka的目的就是把它作为流处理的基础来使用，而且我们想要的正是进行reprocessing的模型。好奇的读者可以在<a href="https://kafka.apache.org/documentation.html#introduction" target="_blank" rel="noopener">这里</a>找到更多关于卡夫卡的信息。</p>
@@ -247,112 +244,256 @@
 <h2 id="启发">启发<a class="post-anchor" href="#启发"></a></h2><p>维持两个系统同状态很难，那就只维持一个系统，另一个系统给它换成这个系统。<br>为什么这个方法在Storm或其他流处理系统中不能同样有效<br>有没有什么办法改进kappa对存储空间或大容量写入的要求<br>替换方案不一定要全方位比原方法好，可以只考虑其中一个需求<br>日志系统中删除的日志如何重计算</p>
 <p><a href="https://www.oreilly.com/radar/questioning-the-lambda-architecture/" target="_blank" rel="noopener">[1]Jay Kreps.Questioning the Lambda Architecture</a></p>
 </body></html>
+            </article>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Lambda/">Lambda</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" target="_blank" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <div class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/07/07/Lambda/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Lambda 架构</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </div>
+                  <div class="post-next col-6">
+                    
+                    
+                      <a href="/2019/11/10/Lambda%20detail/">
+                        <span class="hidden-mobile">The Lambda architecture——principles for architecting realtime Big Data systems阅读笔记（翻译）</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </div>
+                </div>
+              
+            </div>
 
-  
-    <div class="post-reward">
-    <div id="reward-button">打赏</div>
-      <div id="qr">
-        <div class="wrap">
             
-            <div class="bg-wrap">
-              <a href="/images/zhifubao.jpg" target="_block" class="bg" style="background-image:url('/images/zhifubao.jpg')"></a>
-              支付宝
-            </div>
-            
-            
-            <div class="bg-wrap">
-                <a href="/images/weixin.jpg" target="_block" class="bg" style="background-image:url('/images/weixin.jpg')"></a>
-              微信
-            </div>
-            
+          </div>
         </div>
       </div>
     </div>
-  
-  <div class="post-guide">
-    <div class="item left">
-        
-          <a href="/2019/11/17/graduate1/">毕业论文从一片迷茫到完成不全记录</a>
-        
-    </div>
-    <div class="item right">
-        
-          <a href="/2019/11/10/Lambda%20detail/">The Lambda architecture——principles for architecting realtime Big Data systems阅读笔记（翻译）</a>
-        
-    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
   </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
 
   
-
-  <div class="post-copyright">
-    <div class="auth">
-      本文作者：<a href="http://yimial.github.io">执杭</a>
-    </div>
-    <div class="link">
-      永久链接：<a href="http://yimial.github.io/2019/11/12/Questioning%20the%20Lambda%20Architecture/">http://yimial.github.io/2019/11/12/Questioning%20the%20Lambda%20Architecture/</a>
-    </div>
-    <div class="declare">
-      版权声明：本文首发于<a href="http://yimial.github.io">执杭</a>的博客，转载请注明出处！
-    </div>
-  </div>
-
-  <div id="comment"></div>
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
 
   
-  
-</article>
-        <footer>
-          <div class="copyright">
-            ©2020
-            <a href="http://yimial.github.io">执杭</a> Powered by <a href="https://hexo.io" target="_blank" rel="noopener">Hexo</a> |
-            <a href="https://github.com/shixiaohu2206/hexo-theme-huhu" target="_blank" rel="noopener">hexo-theme-huhu</a>
-          </div>
-          
-        </footer>
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
       </div>
     </div>
-  </body>
+  </div>
+</div>
   
-</html>
-<script type="text/javascript">
-                  window.HUHU_CONFIG = JSON.parse("{\"share\":[\"weibo\",\"weixin\",\"qqkongjian\",\"QQ\",\"douban\",\"facebook\",\"twitter\",\"google\"],\"valine\":{\"API_ID\":\"\",\"API_KEY\":\"\"},\"service_worker\":{\"open\":false}}")
-                </script> <script type="text/javascript">window.addEventListener('load', function() {
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener">
+        <span>Fluid</span></a>
+    </div>
     
-    window.loadJs = function(d, m, a) {
-      var c = document.getElementsByTagName('head')[0] || document.head || document.documentElement
-      var b = document.createElement('script')
-      b.defer = true
-      b.setAttribute('type', 'text/javascript')
-      b.setAttribute('charset', 'UTF-8')
-      b.setAttribute('async', 'true')
-      b.setAttribute('src', d)
-      m && b.setAttribute('data-main', '/scripts/app-built')
-      if (typeof a === 'function') {
-        if (window.attachEvent) {
-          b.onreadystatechange = function() {
-            var e = b.readyState
-            if (e === 'loaded' || e === 'complete') {
-              b.onreadystatechange = null
-              a()
-            }
-          }
-        } else {
-          b.onload = a
-        }
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: 'article.markdown-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 0,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
       }
-      c.appendChild(b)
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "Questioning the Lambda Architecture阅读笔记（翻译）&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
     }
-    window.loadJs && window.loadJs('https://cdn.bootcss.com/require.js/2.3.6/require.min.js', true, function() {require.config({"paths":{"util":"util","share":"share","search":"search","pagemap":"pagemap.min","registerSW":"registerSW","valine":"cdn/Valine.min","av":["https://cdn.jsdelivr.net/npm/leancloud-storage/dist/av-min"],"pjax":["https://cdn.bootcss.com/jquery.pjax/2.0.1/jquery.pjax.min"],"jquery":["https://cdn.bootcss.com/jquery/3.4.1/jquery.min"],"confirm":["https://cdn.bootcss.com/jquery-confirm/3.3.4/jquery-confirm.min"],"fancybox":["https://cdn.bootcss.com/fancybox/3.5.7/jquery.fancybox.min"],"chart":["https://cdn.bootcss.com/Chart.js/2.8.0-rc.1/Chart.bundle.min"]},"map":{"*":{"css":"https://cdn.bootcss.com/require-css/0.1.10/css.min.js"}},"shim":{"fancybox":{"deps":["css!https://cdn.bootcss.com/fancybox/3.5.7/jquery.fancybox.min.css"]},"confirm":{"deps":["css!https://cdn.bootcss.com/jquery-confirm/3.3.4/jquery-confirm.min.css"]},"chart":{"deps":["css!https://cdn.bootcss.com/Chart.js/2.8.0-rc.1/Chart.min.css"]}},"waitSeconds":3})})
-  })</script> <script type="text/javascript">
-                  ;(function() {
-                    var bp = document.createElement('script')
-                    var curProtocol = window.location.protocol.split(':')[0]
-                    if (curProtocol === 'https') {
-                      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js'
-                    } else {
-                      bp.src = 'http://push.zhanzhang.baidu.com/push.js'
-                    }
-                    var s = document.getElementsByTagName('script')[0]
-                    s.parentNode.insertBefore(bp, s)
-                  })()
-                </script> 
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
