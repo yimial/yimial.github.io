@@ -194,6 +194,9 @@
 .post-wrap code {
   font-size: 0.75rem;
   font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+  white-space: normal;
+  word-break: break-all;
+  line-height: 20px;
 }
 .post-entry code:not(.hljs),
 .post-wrap code:not(.hljs) {
