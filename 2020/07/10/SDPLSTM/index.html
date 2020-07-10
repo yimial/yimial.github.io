@@ -17,7 +17,7 @@
   <meta name="description" content="">
   <meta name="author" content="执杭">
   <meta name="keywords" content="">
-  <title>Relation classification via convolutional deep neural network论文笔记 - Hexo</title>
+  <title>Classifying Relations via Long Short Term Memory Networks along Shortest Dependency Paths论文笔记 - Hexo</title>
 
   <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
 
@@ -152,7 +152,7 @@
               
   <div class="mt-3 post-meta">
     <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-    <time datetime="2020-07-10 12:55">
+    <time datetime="2020-07-10 17:56">
       2020年7月10日 下午
     </time>
   </div>
@@ -163,7 +163,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      507 字
+      1k 字
     </span>
   
 
@@ -173,7 +173,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      5
+      11
        分钟
     </span>
   
@@ -205,33 +205,51 @@
             
               <p class="note note-info">
                 
-                  本文最后更新于：2020年7月10日 下午
+                  本文最后更新于：2020年7月11日 凌晨
                 
               </p>
             
             <article class="markdown-body">
-              <p><img src="/imgs/2020071002/%E6%A8%A1%E5%9E%8B.png" srcset="/img/loading.gif" alt="模型图"></p>
-<h2 id="一、Word-Representation部分"><a href="#一、Word-Representation部分" class="headerlink" title="一、Word Representation部分"></a>一、Word Representation部分</h2><p>有预训练的词向量比随机初始化效果要好很多，可以直接使用Turian给出的词向量</p>
-<h2 id="二、Feature-Extraction部分"><a href="#二、Feature-Extraction部分" class="headerlink" title="二、Feature Extraction部分"></a>二、Feature Extraction部分</h2><h3 id="1-1-Lexical-level-features："><a href="#1-1-Lexical-level-features：" class="headerlink" title="1.1 Lexical level features："></a>1.1 Lexical level features：</h3><p>选择实体词和上下文词的word embedding，还有实体词的上位词的embedding，连接到词汇级特征向量L中</p>
-<p><img src="/imgs/2020071002/%E8%AF%8D%E7%BA%A7%E7%89%B9%E5%BE%81.png" srcset="/img/loading.gif" alt="1594357454564"></p>
-<h2 id="1-2-Sentence-Level-Features"><a href="#1-2-Sentence-Level-Features" class="headerlink" title="1.2 Sentence Level Features"></a>1.2 Sentence Level Features</h2><p>词向量不能捕捉远距离特征和语义构成，而卷积的窗口只能结合局部特征，因此提出一个包含max-pooling的卷积神经网络来提供句子级表示</p>
-<p>每个单词进一步表示为单词特征(WF)和位置特征(PF)，结合WF和PF这个词被表示为W<sub>a</sub> = [WF,PF]<sup>T</sup>，用每个单词的词向量（WF）和位置向量（PF）经过卷积层和非线性变换提取句子层次向量</p>
-<ul>
-<li>若结合上下文窗口，窗口大小为3，每个单词的WF为[x<sub>n-1</sub>, x<sub>n</sub>, x<sub>n-1</sub>]</li>
+              <h4 id="引言："><a href="#引言：" class="headerlink" title="引言："></a>引言：</h4><ul>
+<li>SDP能够消除一句话中无用的单词，<strong>保留最有用的信息</strong>，它完全能够确定两个实体间的关系。在SDP上面的单词是对原始句子的简略表示，它包含了大量目标关系的信息。</li>
+<li>方向很重要。依赖树是一种有向树。并且实体间的关系是有向的，r(a,b)与r(b,a)是不一样的。因此，作者认为让神经网络有能力处理这种有向性式非常必要的。出于这种考虑，作者将SDP按照公共子节点分成两个子路径，设计了两个RNN来传播从实体到公共节点的信息，捕捉关系的<strong>有向性</strong>。将沿着这两条路径提取出来的特征进行拼接之后，再进行分类。</li>
+<li>自然语言的歧义性会提高这个任务的难度，因此<strong>整合异构语言知识</strong>对任务是有益的。为了获取异构信息，作者设计了一种<strong>多通道</strong>的循环神经网络，它充分利用了各种各样的信息，包括单词、命名实体识别的tags，上位词以及语法关系。</li>
+<li>采用了定制的<strong>dropout策略</strong>，能够防止神经网络过拟合。</li>
 </ul>
-<ul>
-<li>PF把单词相对于两个实体的相对距离表示为de维的向量，每个单词的PF为[d<sub>1</sub>,d<sub>2</sub>]</li>
-</ul>
-<p><strong>前向步骤：</strong> </p>
+<h2 id="模型"><a href="#模型" class="headerlink" title="模型"></a>模型</h2><p><img src="/imgs/2020071003/%E6%A8%A1%E5%9E%8B.png" srcset="/img/loading.gif" alt="1594375994513"></p>
 <ol>
-<li>首先使用线性变换处理窗口的输出 Z = W<sub>1</sub>X ，X ∈ R<sup>n<sub>0</sub>×t</sup>，n<sub>0</sub>是向量长度，t是句子长度，W1∈R<sup>n<sub>1</sub>×n<sub>0</sub></sup>，可使用多个不同大小的卷积核，</li>
-<li>m<sub>i</sub>=max Z(i, · )，0≤i≤n1，在Z上执行一个时间轴上的最大操作，每个隐藏层单元用最大的那一维来表示，为以下步骤提供最有用的n-gram，m的长度与句子长度无关了</li>
-<li>g=tanh(W<sub>2</sub>m)，tanh的梯度容易计算，非线性能表示更复杂的特征，W2∈R<sup>n<sub>2</sub>×n<sub>1</sub></sup>，g能表示更高级（句子）的特征了<img src="/imgs/2020071002/%E5%8F%A5%E7%BA%A7%E7%89%B9%E5%BE%81.png" srcset="/img/loading.gif" alt="1594358073536"></li>
+<li>将每个句子使用斯坦福解析器进行解析</li>
+<li>沿着SDP把四种不同的信息输入四个通道。每种信息都使用实数向量embedding来表示。每个通道中的信息经过LSTM后再进行maxpooling</li>
+<li>把每个通道两个路径的池化层输出进行拼接，再把各个通道的输出进行拼接</li>
+<li>拼接后的向量输入一个全连接隐藏层</li>
+<li>最后连接一个softmax输出层进行分类</li>
 </ol>
-<h3 id="1-3-词法特征和句法特征结合"><a href="#1-3-词法特征和句法特征结合" class="headerlink" title="1.3 词法特征和句法特征结合"></a>1.3 词法特征和句法特征结合</h3><p>将Lexical level features和Sentence Level Features进行拼接，经过W<sub>3</sub>线性层和softmax非线性层获得输出<img src="/imgs/2020071002/softmax.png" srcset="/img/loading.gif" alt="1594359552138"></p>
-<p>使用对数似然函数计算损失函数<img src="/imgs/2020071002/likehood.png" srcset="/img/loading.gif" alt="1594359563116"></p>
-<p>使用SGD进行参数更新<img src="/imgs/2020071002/SGD.png" srcset="/img/loading.gif" alt="1594359573866"></p>
-<p>训练开始时对参数N、W<sub>1</sub>、W<sub>2</sub>、W<sub>3</sub>随机初始化。</p>
+<h3 id="四个通道"><a href="#四个通道" class="headerlink" title="四个通道"></a>四个通道</h3><p>word embedding是最重要的，加上其它3中特征能够少量提高准确率</p>
+<ul>
+<li>word embedding：在大型语料库上进行无监督训练，可表示词语的语法和语义信息（word2vec）</li>
+<li>pos embedding：word embedding所包含的信息可能与在具体的句子中的词性有关，所以将每个输入的单词和它的词性标签联合起来。本文只使用了一个粗粒度的POS类别，包含15个不同的标记（随机初始化）</li>
+<li>dep embedding：同一对单词之间可能具有不同的依赖关系类型。本文把语法关系分为19个基于粗粒度的分类（随机初始化）</li>
+<li>wordnet embedding：每个词都有一个更抽象的概念，上下位关系有助于在不同但概念相似的词之间建立联系。本文使用了Ciaramita and Altun 设计的工具（随机初始化）</li>
+</ul>
+<h3 id="LSTM"><a href="#LSTM" class="headerlink" title="LSTM"></a>LSTM</h3><p>使用以下公式构建RNN可能带来梯度消失或梯度爆炸的问题</p>
+<p><img src="/imgs/2020071003/%E5%85%AC%E5%BC%8F0.jpg" srcset="/img/loading.gif" alt="1594378692943"></p>
+<p>LSTM使用门解决了梯度消失和爆炸问题，本文使用的是 Zaremba and Sutskever 提出的LSTM的变种<br><img src="/imgs/2020071003/%E5%85%AC%E5%BC%8F.png" srcset="/img/loading.gif" alt="公式"></p>
+<h3 id="dropout"><a href="#dropout" class="headerlink" title="dropout"></a>dropout</h3><p>dropout是一种正则化方法，随机从网络中剔除特征单元，但是一般的dropout不能和LSTM一起工作，可能损害记忆单元的有价值记忆能力</p>
+<p>本文尝试了三种dropout方法：</p>
+<ul>
+<li>Dropout embeddings</li>
+<li>在记忆单元内部Dropout，包括i<sub>t</sub>、g<sub>t</sub>、o<sub>t</sub>、c<sub>t</sub>、h<sub>t</sub></li>
+<li>在倒数第二层的全连接隐藏层进行Dropout</li>
+</ul>
+<p>实验表明Dropout LSTM单元对我们的模型是有害的，而其他两种策略可以提高性能。</p>
+<h3 id="训练目标"><a href="#训练目标" class="headerlink" title="训练目标"></a>训练目标</h3><p>采用交叉熵来作为损失函数，使用SGD进行优化，min-batch=10</p>
+<p><img src="/imgs/2020071003/%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0.jpg" srcset="/img/loading.gif" alt="损失函数"></p>
+<h3 id="超参数"><a href="#超参数" class="headerlink" title="超参数"></a>超参数</h3><p>作者将word-embedding的维度设置为200，POS、WordNet hyponymy和语法关系embedding的维度设置为50，设置λ为10<sup>−5</sup>。</p>
+<p>作者在embedding上使用dropout后，准确率提升了2.16%，在倒数第二层上使用dropout后，准确率提升0.16%。</p>
+<h3 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h3><p>最终的F1值达到了83.7%</p>
+<blockquote>
+<p>版权声明：本文为博主原创文章，遵循 CC 4.0 BY-SA 版权协议，转载请附上原文出处链接和本声明。<br>参考链接：<a href="https://blog.csdn.net/dalangzhonghangxing/article/details/80240568" target="_blank" rel="noopener">https://blog.csdn.net/dalangzhonghangxing/article/details/80240568</a></p>
+</blockquote>
 
             </article>
             <hr>
@@ -244,7 +262,7 @@
                     
                       <a class="hover-with-bg" href="/tags/%E5%85%B3%E7%B3%BB%E6%8A%BD%E5%8F%96/">关系抽取</a>
                     
-                      <a class="hover-with-bg" href="/tags/CNN/">CNN</a>
+                      <a class="hover-with-bg" href="/tags/LSTM/">LSTM</a>
                     
                   </div>
                 
@@ -257,18 +275,12 @@
                   <div class="post-prev col-6">
                     
                     
-                      <a href="/2020/07/10/SDPLSTM/">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Classifying Relations via Long Short Term Memory Networks along Shortest Dependency Paths论文笔记</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </div>
                   <div class="post-next col-6">
                     
                     
-                      <a href="/2020/07/09/2020%20KG%20survey%20KA/">
-                        <span class="hidden-mobile">A Survey on Knowledge Graphs: Representation, Acquisition and Applications的知识获取章节概览及相关论文列表</span>
+                      <a href="/2020/07/10/CNNRE/">
+                        <span class="hidden-mobile">Relation classification via convolutional deep neural network论文笔记</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -414,7 +426,7 @@
     var typed = new Typed('#subtitle', {
       strings: [
         '  ',
-        "Relation classification via convolutional deep neural network论文笔记&nbsp;",
+        "Classifying Relations via Long Short Term Memory Networks along Shortest Dependency Paths论文笔记&nbsp;",
       ],
       cursorChar: "_",
       typeSpeed: 70,
