@@ -4,6 +4,31 @@
   
   
   <entry>
+    <title>PCNNMIL</title>
+    <link href="/2020/07/12/PCNNMIL/"/>
+    <url>/2020/07/12/PCNNMIL/</url>
+    
+    <content type="html"><![CDATA[<h3 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h3><p>传统远程监督两大问题：</p><ul><li>远距离监管的假设过于强烈，导致错误的标签问题。一个句子提及知识库中的两个实体并不一定表示了它们之间的关系，这两个实体可能只是共享相同的主题。一个句子没有表达这种关系，但仍然被选为训练实例。这将会阻碍在这种噪声数据上训练的模型的性能。</li><li>NLP工具的误差导致错误传播或积累。而且句子越长，准确性越低，而来自web的句子一般都很长。</li></ul><p>解决方案：提出了一个新的模型，称为多实例学习的分段卷积神经网络</p><ul><li>将远程监督关系提取作为一个多实例问题，考虑了实例标签的不确定性。在多实例问题中，训练集由多个包组成，每个包包含多个样本。包的标签是已知的;然而，包内的样本的标签是未知的。在包层设计了一个目标函数。在学习过程中，考虑了样本标签的不确定性；这缓解了错误的标签问题。</li><li>避免了特征工程，而是采用卷积架构和分段最大池化来自动学习相关的特征。对Zeng的CNN关系抽取网络进行扩展，使用最大池化操作来确定最显著的特征。</li><li>单个最大池化不足以捕捉两个实体之间的结构信息。为了捕获结构和其他潜在信息，根据两个给定实体的位置将卷积结果分成三段，并设计了分段最大池化层，分段最大池化层返回每个片段中的最大值。</li></ul><h2 id="模型"><a href="#模型" class="headerlink" title="模型"></a>模型</h2><p>模型分为四层：向量表示层、卷积层、分段最大池化层和softmax输出层。</p><h3 id="向量表示"><a href="#向量表示" class="headerlink" title="向量表示"></a>向量表示</h3><p>通过查找预先训练好的单词嵌入，每个输入单词被转换成一个实值向量。此外，利用位置特征(PFs)来指定实体对，并通过查找位置嵌入来将位置特征转化为向量。</p><h4 id="词嵌入"><a href="#词嵌入" class="headerlink" title="词嵌入"></a>词嵌入</h4><p>将文本中的每个单词映射到一个k维实值向量，它们能够很好地捕获单词的语义和句法信息。训练神经网络的常用方法是随机初始化所有参数，然后使用优化算法对其进行优化。最近的研究表明，当用单词嵌入初始化神经网络时，神经网络可以收敛到更好的局部极小值。单词嵌入通常是通过利用未标记文本中的单词的共现结构以完全无监督的方式学习的。使用预训练过的单词嵌入已经成为增强许多其他NLP任务的常见做法。本文使用 Skip-gram 训练单词嵌入。</p><h4 id="位置嵌入"><a href="#位置嵌入" class="headerlink" title="位置嵌入"></a>位置嵌入</h4><p>PF定义为当前单词到e1和e2的相对距离的组合。</p><p>随机初始化两个位置嵌入矩阵(pf1和pf2)。然后通过查找位置嵌入矩阵将相对距离转换为实值向量。  </p><p>在组合单词嵌入和位置嵌入时，向量表示部分将实例转换为S∈R<sup>S×d</sup>的矩阵，其中S是句子长度，d = d<sub>w</sub> + d<sub>p</sub>∗2。矩阵S随后被输入到卷积部分。</p><h3 id="卷积层"><a href="#卷积层" class="headerlink" title="卷积层"></a>卷积层</h3><p>在关系抽取中，标记了目标实体的输入句子只对应于一个关系类型。因此，可能需要利用所有的局部特征，在全局范围内进行预测。在神经网络中，卷积方法是自然适用于所有这些特征的方法。</p><p><img src="/imgs/2020071201/%E6%A8%A1%E5%9E%8B.png" srcset="/img/loading.gif" alt="模型"></p><p>为了获得多粒度信息，使用多个尺寸的卷积核(W = {w<sub>1</sub> ,w<sub>2</sub> ,··· ,w<sub>n</sub> })。</p><p>c<sub>i </sub>表示以 w<sub>i</sub> 为卷积核的输出，n代表卷积核的数量</p><h3 id="池化层"><a href="#池化层" class="headerlink" title="池化层"></a>池化层</h3><p>卷积输出矩阵C的大小取决于句子的长度，一般将maxpooling层用于解决这个问题，其思想是在每个特征图中捕捉最重要的特征。</p><p>单个最大池化减少隐藏层大小的过程太快、太粗糙，无法捕获用于提取关系的细粒度特征。且不足以覆盖两个实体之间的结构信息。</p><p>因此本文使用分段网络，根据所选择的两个实体，将输入的句子分为三个部分，使用分段最大池过程，返回每个段中的最大值。</p><p><img src="/imgs/2020071201/%E5%88%86%E6%AE%B5%E6%9C%80%E5%A4%A7%E6%B1%A0%E5%8C%96.png" srcset="/img/loading.gif" alt="分段最大池化"></p><p>i代表第i个卷积核，j代表句子的第j段，p<sub>ij</sub>代表句子第j段在第i个卷积核的输出，将每个卷积核的三段输出拼接。于是，对每个卷积核的输出，都能得到一个三维向量pi。最后拼接所有p1:n，n表示卷积核数量。</p><p><img src="/imgs/2020071201/tanh.png" srcset="/img/loading.gif" alt="tanh"></p><p>再连接到一个非线性函数如tanh，最后，分段最大池化层输出一个向量g。g ∈ R<sup>3n</sup>。</p><h3 id="softmax层"><a href="#softmax层" class="headerlink" title="softmax层"></a>softmax层</h3><p>为了计算每个关系的置信度，将特征向量g输入到softmax分类器中。</p><p>首先经过一个线性变换，W<sub>1</sub>∈ R<sup>n1×3n</sup>是变换矩阵，n1是关系类型数量。</p><p><img src="/imgs/2020071201/W1.png" srcset="/img/loading.gif" alt="W1"></p><p>测试时，使用缩放因子p对W<sub>1</sub>进行缩放W<sub>1</sub> = pW<sub>1</sub></p><p>前向推理时，给定一个输入实例m，带有参数的网络输出一个向量o，其中第r个分量o对应关系r的得分。为了获得所有关系类型的条件概率，对所有关系类型应用softmax操作。m<sub>i</sub><sup>j</sup>是第i个包的第j个样例。</p><p><img src="/imgs/2020071201/softmax.png" srcset="/img/loading.gif" alt="softmax"></p><h4 id="Dropout"><a href="#Dropout" class="headerlink" title="Dropout"></a>Dropout</h4><p>Dropout通过在前向计算过程中以概率p随机删除一个隐藏单元来防止隐藏单元的协同适应。</p><p>本文在倒数第二层使用dropout：对g应用“掩蔽”操作(g◦r)，其中r是一个概率p为1的伯努利随机向量。</p><p><img src="/imgs/2020071201/dropout.png" srcset="/img/loading.gif" alt="dropout"></p><h2 id="多实例"><a href="#多实例" class="headerlink" title="多实例"></a>多实例</h2><p>为了解决标记错误问题，本文对PCNNs进行多实例学习，在包级别上定义目标函数</p><p><img src="/imgs/2020071201/%E7%9B%AE%E6%A0%87%E5%87%BD%E6%95%B0.png" srcset="/img/loading.gif" alt="目标函数"></p><p>其中j是这个包中类型为i的概率最大的样例</p><p><img src="/imgs/2020071201/j.png" srcset="/img/loading.gif" alt="j"></p><p>总体思想是：让‘每个包中最可能表达这个包所属关系类别的那个样例’的关系类别为i的概率最大</p><p>传统的反向传播算法是根据所有的训练实例来修改网络，而多实例学习的反向传播算法是根据包来修改网络。因此，本文的方法解决了远程监督关系提取的本质问题，也就是其中一些训练实例会不可避免地被错误标记。</p><p><strong>实现方法</strong>：对每一个minbatch，</p><ol><li>按照关系分类分成n个包，每个包一个一个输入网络。</li><li>计算包中所有样本的关系i的概率，求得该概率最大的样本j，将每个包符合该条件的样本抽出构建一个新的小样本集</li><li>用新构建出的样本集更新参数</li></ol><p>测试时每个样本正常通过PCNNs网络。</p>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>关系抽取</tag>
+      
+      <tag>远程监督</tag>
+      
+      <tag>多实例</tag>
+      
+      <tag>PCNN</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>End to end relation extraction using lstms on sequences and tree structures论文笔记</title>
     <link href="/2020/07/11/SPtree/"/>
     <url>/2020/07/11/SPtree/</url>
