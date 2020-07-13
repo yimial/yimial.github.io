@@ -55,7 +55,7 @@
     <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
   <div class="container">
     <a class="navbar-brand"
-       href="/">&nbsp;<strong>Fluid</strong>&nbsp;</a>
+       href="/">&nbsp;<strong>执杭</strong>&nbsp;</a>
 
     <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
             data-target="#navbarSupportedContent"
@@ -205,7 +205,7 @@
             
               <p class="note note-info">
                 
-                  本文最后更新于：2020年7月11日 晚上
+                  本文最后更新于：2020年7月13日 中午
                 
               </p>
             
@@ -244,7 +244,10 @@
 <h4 id="多实例学习以一个句子包作为输入，预测实体对之间的关系"><a href="#多实例学习以一个句子包作为输入，预测实体对之间的关系" class="headerlink" title="多实例学习以一个句子包作为输入，预测实体对之间的关系"></a>多实例学习以一个句子包作为输入，预测实体对之间的关系</h4><pre><code>• D. Zeng, K. Liu, Y. Chen, and J. Zhao, “Distant supervision for relation extraction via piecewise convolutional neural networks,”in EMNLP, 2015, pp. 1753–1762.与传统CNN[Zeng]相比，PCNN能够更有效地捕获实体对内部的结构信息。根据实体位置分段的最大池化
 • X. Jiang, Q. Wang, P. Li, and B. Wang, “Relation extraction with multi-instance multi-label convolutional neural networks,” in COLING, 2016, pp. 1471–1480.MIMLCNN进一步将其扩展到多标签学习，利用跨句最大池化进行特征选择。
 • H. Ye, W. Chao, Z. Luo, and Z. Li, “Jointly extracting relations with class ties via effective deep ranking,” in ACL, vol. 1, 2017, pp.1810–1820.利用class ties进行
-• W. Zeng, Y. Lin, Z. Liu, and M. Sun, “Incorporating relation paths in neural relation extraction,” in EMNLP, 2017, pp. 1768–1777.利用关系路径</code></pre><h4 id="RNNs也被引入"><a href="#RNNs也被引入" class="headerlink" title="RNNs也被引入"></a>RNNs也被引入</h4><pre><code>• Y. Xu, L. Mou, G. Li, Y. Chen, H. Peng, and Z. Jin, “Classifying relations via long short term memory networks along shortest dependency paths,” in EMNLP, 2015, pp. 1785–1794.采用多通道LSTM，利用实体对之间的最短依赖路径
+• W. Zeng, Y. Lin, Z. Liu, and M. Sun, “Incorporating relation paths in neural relation extraction,” in EMNLP, 2017, pp. 1768–1777.利用关系路径</code></pre><blockquote>
+<p><a href="https://yimial.github.io/2020/07/12/PCNNMIL/">Zeng</a><br><a href="https://yimial.github.io/2020/07/13/MIMLDS/">Jiang</a></p>
+</blockquote>
+<h4 id="RNNs也被引入"><a href="#RNNs也被引入" class="headerlink" title="RNNs也被引入"></a>RNNs也被引入</h4><pre><code>• Y. Xu, L. Mou, G. Li, Y. Chen, H. Peng, and Z. Jin, “Classifying relations via long short term memory networks along shortest dependency paths,” in EMNLP, 2015, pp. 1785–1794.采用多通道LSTM，利用实体对之间的最短依赖路径
 • M. Miwa and M. Bansal, “End-to-end relation extraction using lstms on sequences and tree structures,” in ACL, vol. 1, 2016, pp.1105–1116.Miwa等基于依赖树的序列和树结构LSTM
 • R. Cai, X. Zhang, and H. Wang, “Bidirectional recurrent convolutional neural network for relation classification,” in ACL, vol. 1,2016, pp. 756–765.BRCNN利用双通道双向LSTM和CNN，将捕获序列依赖关系的RNN和表示局部语义的CNN结合起来</code></pre><blockquote>
 <p><a href="https://yimial.github.io/2020/07/10/SDPLSTM/">Xu</a><br><a href="https://yimial.github.io/2020/07/10/SPtree/">Miwa</a><br><a href="https://zhuanlan.zhihu.com/p/22683996" target="_blank" rel="noopener">Cai</a></p>
@@ -320,6 +323,31 @@
               <div class="comments" id="comments">
                 
                 
+  <div id="vcomments"></div>
+  <script type="text/javascript">
+    function loadValine() {
+      addScript('https://cdn.staticfile.org/valine/1.4.14/Valine.min.js', function () {
+        new Valine({
+          el: "#vcomments",
+          app_id: "KFUt1PtYt65wARildGEwd2Wc-gzGzoHsz",
+          app_key: "H1drDYV5zLpzLpyzCOP4moVf",
+          placeholder: "请讲",
+          path: window.location.pathname,
+          avatar: "retro",
+          meta: ["nick","mail","link"],
+          pageSize: "10",
+          lang: "zh-CN",
+          highlight: false,
+          recordIP: true,
+          serverURLs: "https://kfut1pty.lc-cn-n1-shared.com",
+        });
+      });
+    }
+    createObserver(loadValine, 'vcomments');
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="https://valine.js.org" target="_blank" rel="nofollow noopener noopener">comments
+      powered by Valine.</a></noscript>
+
 
               </div>
             

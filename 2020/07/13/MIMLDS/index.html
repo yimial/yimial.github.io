@@ -55,7 +55,7 @@
     <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
   <div class="container">
     <a class="navbar-brand"
-       href="/">&nbsp;<strong>Fluid</strong>&nbsp;</a>
+       href="/">&nbsp;<strong>执杭</strong>&nbsp;</a>
 
     <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
             data-target="#navbarSupportedContent"
@@ -264,7 +264,7 @@
 <h4 id="损失函数"><a href="#损失函数" class="headerlink" title="损失函数"></a>损失函数</h4><p>本文设计了两个多标签建模损失函数，y<sub>i</sub>是标签 i 的真实值:</p>
 <p><img src="/imgs/2020071301/%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B01.png" srcset="/img/loading.gif" alt="损失函数1"></p>
 <p><img src="/imgs/2020071301/%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B02.png" srcset="/img/loading.gif" alt="损失函数2"></p>
-<h3 id="其他设置："><a href="#其他设置：" class="headerlink" title="其他设置："></a>其他设置：</h3><p>损失函数采用Adadelta</p>
+<h3 id="其他设置"><a href="#其他设置" class="headerlink" title="其他设置"></a>其他设置</h3><p>损失函数采用Adadelta</p>
 <p>对倒数第二层采用dropout（g中的每一个元素都是通过乘以一个概率p为0的伯努利随机变量随机退出的）</p>
 <p>在测试时，在评分前将学习矩阵w<sub>1</sub>按p(即w<sub>1</sub> = pw<sub>1</sub>)进行缩放</p>
 <p>为了方便比较，参数设置和Zeng的PCNN基本相同</p>
@@ -317,6 +317,31 @@
               <div class="comments" id="comments">
                 
                 
+  <div id="vcomments"></div>
+  <script type="text/javascript">
+    function loadValine() {
+      addScript('https://cdn.staticfile.org/valine/1.4.14/Valine.min.js', function () {
+        new Valine({
+          el: "#vcomments",
+          app_id: "KFUt1PtYt65wARildGEwd2Wc-gzGzoHsz",
+          app_key: "H1drDYV5zLpzLpyzCOP4moVf",
+          placeholder: "请讲",
+          path: window.location.pathname,
+          avatar: "retro",
+          meta: ["nick","mail","link"],
+          pageSize: "10",
+          lang: "zh-CN",
+          highlight: false,
+          recordIP: true,
+          serverURLs: "https://kfut1pty.lc-cn-n1-shared.com",
+        });
+      });
+    }
+    createObserver(loadValine, 'vcomments');
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="https://valine.js.org" target="_blank" rel="nofollow noopener noopener">comments
+      powered by Valine.</a></noscript>
+
 
               </div>
             
