@@ -17,7 +17,7 @@
   <meta name="description" content="">
   <meta name="author" content="执杭">
   <meta name="keywords" content="">
-  <title>Distant Supervision for Relation Extraction via Piecewise Convolutional Neural Networks论文笔记 - Hexo</title>
+  <title>Relation Extraction with Multi-instance Multi-label Convolutional Neural Networks论文笔记 - Hexo</title>
 
   <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
 
@@ -152,8 +152,8 @@
               
   <div class="mt-3 post-meta">
     <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-    <time datetime="2020-07-12 17:33">
-      2020年7月12日 下午
+    <time datetime="2020-07-13 09:52">
+      2020年7月13日 上午
     </time>
   </div>
 
@@ -163,7 +163,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      1.8k 字
+      1.6k 字
     </span>
   
 
@@ -173,7 +173,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      18
+      17
        分钟
     </span>
   
@@ -205,61 +205,69 @@
             
               <p class="note note-info">
                 
-                  本文最后更新于：2020年7月12日 晚上
+                  本文最后更新于：2020年7月13日 上午
                 
               </p>
             
             <article class="markdown-body">
-              <h3 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h3><p>传统远程监督两大问题：</p>
+              <blockquote>
+<p>该论文在Zeng提出的远程监督多实例PCNN (Zeng et al., 2015)上做出了改进。</p>
+</blockquote>
+<p><strong>Zeng方法的两个缺点</strong>：</p>
 <ul>
-<li>远距离监管的假设过于强烈，导致错误的标签问题。一个句子提及知识库中的两个实体并不一定表示了它们之间的关系，这两个实体可能只是共享相同的主题。一个句子没有表达这种关系，但仍然被选为训练实例。这将会阻碍在这种噪声数据上训练的模型的性能。</li>
-<li>NLP工具的误差导致错误传播或积累。而且句子越长，准确性越低，而来自web的句子一般都很长。</li>
+<li>基于expressed-at-least-once假设。这个假设为：当两个实体存在某种关系，那么至少有一个提到这两个实体的样本表达该关系。这个假设过于强烈，根据这个假设，PCNN在训练和预测时，只选择每个实体对的包中最有可能的句子，这样可能会失去其他句子所包含的丰富信息。且实际上，给定两个参与一个关系的实体，可能很难从训练文本中找到表达该关系的确切的单个句子。通过聚合多个句子中可用的信息，可能会得到更多支持事实的信息。</li>
+<li>其次，PCNN将远监督RE视为一个单标签学习问题，为每个实体对选择一个关系标签，忽略了同一实体对之间可能存在多个关系的事实。</li>
 </ul>
-<p>解决方案：提出了一个新的模型，称为多实例学习的分段卷积神经网络</p>
+<p>针对以上问题，本文提出了一个多实例多标签卷积神经网络(MIMLCNN)架构来解决上述两个问题。</p>
 <ul>
-<li>将远程监督关系提取作为一个多实例问题，考虑了实例标签的不确定性。在多实例问题中，训练集由多个包组成，每个包包含多个样本。包的标签是已知的;然而，包内的样本的标签是未知的。在包层设计了一个目标函数。在学习过程中，考虑了样本标签的不确定性；这缓解了错误的标签问题。</li>
-<li>避免了特征工程，而是采用卷积架构和分段最大池化来自动学习相关的特征。对Zeng的CNN关系抽取网络进行扩展，使用最大池化操作来确定最显著的特征。</li>
-<li>单个最大池化不足以捕捉两个实体之间的结构信息。为了捕获结构和其他潜在信息，根据两个给定实体的位置将卷积结果分成三段，并设计了分段最大池化层，分段最大池化层返回每个片段中的最大值。</li>
+<li>首先，放松了expressed-at-least-once假设，而是假设两个实体之间的关系可以从提到这两个实体的所有句子中显式地表达或隐式地推导出来。因此，在使用卷积架构自动提取每个句子内的特征后，使用跨句子最大池化来选择不同句子中的特征，然后将最显著的特征聚合为每个实体对的向量表示。从而充分利用了这些句子中所包含的所有可用信息。</li>
+<li>对于第二个问题，本文通过在神经网络分类器中设计不同的多标签损失函数来处理重叠关系。</li>
 </ul>
-<h2 id="模型"><a href="#模型" class="headerlink" title="模型"></a>模型</h2><p>模型分为四层：向量表示层、卷积层、分段最大池化层和softmax输出层。</p>
-<h3 id="向量表示"><a href="#向量表示" class="headerlink" title="向量表示"></a>向量表示</h3><p>通过查找预先训练好的单词嵌入，每个输入单词被转换成一个实值向量。此外，利用位置特征(PFs)来指定实体对，并通过查找位置嵌入来将位置特征转化为向量。</p>
-<h4 id="词嵌入"><a href="#词嵌入" class="headerlink" title="词嵌入"></a>词嵌入</h4><p>将文本中的每个单词映射到一个k维实值向量，它们能够很好地捕获单词的语义和句法信息。训练神经网络的常用方法是随机初始化所有参数，然后使用优化算法对其进行优化。最近的研究表明，当用单词嵌入初始化神经网络时，神经网络可以收敛到更好的局部极小值。单词嵌入通常是通过利用未标记文本中的单词的共现结构以完全无监督的方式学习的。使用预训练过的单词嵌入已经成为增强许多其他NLP任务的常见做法。本文使用 Skip-gram 训练单词嵌入。</p>
-<h4 id="位置嵌入"><a href="#位置嵌入" class="headerlink" title="位置嵌入"></a>位置嵌入</h4><p>PF定义为当前单词到e1和e2的相对距离的组合。</p>
-<p>随机初始化两个位置嵌入矩阵(pf1和pf2)。然后通过查找位置嵌入矩阵将相对距离转换为实值向量。  </p>
-<p>在组合单词嵌入和位置嵌入时，向量表示部分将实例转换为S∈R<sup>S×d</sup>的矩阵，其中S是句子长度，d = d<sub>w</sub> + d<sub>p</sub>∗2。矩阵S随后被输入到卷积部分。</p>
-<h3 id="卷积层"><a href="#卷积层" class="headerlink" title="卷积层"></a>卷积层</h3><p>在关系抽取中，标记了目标实体的输入句子只对应于一个关系类型。因此，可能需要利用所有的局部特征，在全局范围内进行预测。在神经网络中，卷积方法是自然适用于所有这些特征的方法。因此，本文利用卷积神经网络自动提取特征。</p>
-<p><img src="/imgs/2020071201/%E6%A8%A1%E5%9E%8B.png" srcset="/img/loading.gif" alt="模型"></p>
-<p>为了获得多粒度信息，使用多个尺寸的卷积核(W = {w<sub>1</sub> ,w<sub>2</sub> ,··· ,w<sub>n</sub> })。</p>
-<p>c<sub>i </sub>表示以 w<sub>i</sub> 为卷积核的输出，n代表卷积核的数量</p>
-<h3 id="池化层"><a href="#池化层" class="headerlink" title="池化层"></a>池化层</h3><p>卷积输出矩阵C的大小取决于句子的长度，一般将maxpooling层用于解决这个问题，其思想是在每个特征图中捕捉最重要的特征。</p>
-<p>单个最大池化减少隐藏层大小的过程太快、太粗糙，无法捕获用于提取关系的细粒度特征。且不足以覆盖两个实体之间的结构信息。</p>
-<p>因此本文提出分段最大池化，根据所选择的两个实体，将输入的句子分为三个部分，返回每个段中的最大值。</p>
-<p><img src="/imgs/2020071201/%E5%88%86%E6%AE%B5%E6%9C%80%E5%A4%A7%E6%B1%A0%E5%8C%96.png" srcset="/img/loading.gif" alt="分段最大池化"></p>
-<p>i代表第i个卷积核，j代表句子的第j段，p<sub>ij</sub>代表句子第j段在第i个卷积核的输出，将每个卷积核的三段输出拼接。于是，对每个卷积核的输出，都能得到一个三维向量pi。最后拼接所有p1:n，n表示卷积核数量。</p>
-<p><img src="/imgs/2020071201/tanh.png" srcset="/img/loading.gif" alt="tanh"></p>
-<p>再连接到一个非线性函数如tanh，最后，分段最大池化层输出一个向量g。g ∈ R<sup>3n</sup>。</p>
-<h3 id="softmax层"><a href="#softmax层" class="headerlink" title="softmax层"></a>softmax层</h3><p>为了计算每个关系的置信度，将特征向量g输入到softmax分类器中。</p>
-<p>首先经过一个线性变换，W<sub>1</sub>∈ R<sup>n1×3n</sup>是变换矩阵，n1是关系类型数量。</p>
-<p><img src="/imgs/2020071201/W1.png" srcset="/img/loading.gif" alt="W1"></p>
-<p>测试时，使用缩放因子p对W<sub>1</sub>进行缩放W<sub>1</sub> = pW<sub>1</sub></p>
-<p>前向推理时，给定一个输入实例m，带有参数的网络输出一个向量o，其中第r个分量o对应关系r的得分。为了获得所有关系类型的条件概率，对所有关系类型应用softmax操作。m<sub>i</sub><sup>j</sup>是第i个包的第j个样例。</p>
-<p><img src="/imgs/2020071201/softmax.png" srcset="/img/loading.gif" alt="softmax"></p>
-<h4 id="Dropout"><a href="#Dropout" class="headerlink" title="Dropout"></a>Dropout</h4><p>Dropout通过在前向计算过程中以概率p随机删除一个隐藏单元来防止隐藏单元的协同适应。</p>
-<p>本文在倒数第二层使用dropout：对g应用“掩蔽”操作(g◦r)，其中r是一个概率p为1的伯努利随机向量。</p>
-<p><img src="/imgs/2020071201/dropout.png" srcset="/img/loading.gif" alt="dropout"></p>
-<h2 id="多实例"><a href="#多实例" class="headerlink" title="多实例"></a>多实例</h2><p>为了解决标记错误问题，本文对PCNNs进行多实例学习，在包级别上定义目标函数</p>
-<p><img src="/imgs/2020071201/%E7%9B%AE%E6%A0%87%E5%87%BD%E6%95%B0.png" srcset="/img/loading.gif" alt="目标函数"></p>
-<p>其中j是这个包中类型为i的概率最大的样例</p>
-<p><img src="/imgs/2020071201/j.png" srcset="/img/loading.gif" alt="j"></p>
-<p>总体思想是：让‘每个包中最可能表达这个包所属关系类别的那个样例’的关系类别为i的概率最大</p>
-<p>传统的反向传播算法是根据所有的训练实例来修改网络，而多实例学习的反向传播算法是根据包来修改网络。因此，本文的方法解决了远程监督关系提取的本质问题，也就是其中一些训练实例会不可避免地被错误标记。</p>
-<p><strong>实现方法</strong>：对每一个minbatch，</p>
-<ol>
-<li>按照关系分类分成n个包，每个包一个一个输入网络。</li>
-<li>计算包中所有样本的关系i的概率，求得该概率最大的样本j，将每个包符合该条件的样本抽出构建一个新的小样本集</li>
-<li>用新构建出的样本集更新参数</li>
-</ol>
-<p>测试时每个样本正常通过PCNNs网络。</p>
+<h2 id="模型"><a href="#模型" class="headerlink" title="模型"></a>模型</h2><p>该模型以实体对(e<sub>1</sub>, e<sub>2</sub>)以及与实体对对齐的所有句子作为输入，输出两个实体之间保持的知识库关系集。</p>
+<p><img src="/imgs/2020071301/%E6%A8%A1%E5%9E%8B.png" srcset="/img/loading.gif" alt="模型"></p>
+<p>关键步骤:(1)句子级特征提取 (2)跨句子最大池化 (3)多标签关系建模</p>
+<h3 id="句子级特征提取"><a href="#句子级特征提取" class="headerlink" title="句子级特征提取"></a>句子级特征提取</h3><p>目的是为每一个对齐的句子生成一个特征向量。首先将句子长度填充到h，并将其转换为一个矩阵表示，其中每一行表示一个单词标记。然后对矩阵进行卷积、分段最大池化运算，得到向量表示。</p>
+<p>其中单词嵌入在训练数据集上运行skip-gram模型得到，位置嵌入使用[-1,1]的均匀分布随机初始化</p>
+<p><img src="/imgs/2020071301/%E5%8F%A5%E5%AD%90%E7%BA%A7%E7%89%B9%E5%BE%81%E6%8F%90%E5%8F%96.png" srcset="/img/loading.gif" alt="句子级特征提取"></p>
+<p>使用和Zeng一样的embedding层，X ∈ R<sup>h×d<sub>s</sub></sup>，d<sub>s</sub> = d<sub>w</sub> + 2 ∗ d<sub>p</sub> ，h是句子长度。</p>
+<h3 id="卷积层"><a href="#卷积层" class="headerlink" title="卷积层"></a>卷积层</h3><p>卷积操作表达式如下</p>
+<p><img src="/imgs/2020071301/%E5%8D%B7%E7%A7%AF%E5%B1%82.png" srcset="/img/loading.gif" alt="卷积层"></p>
+<p>W = R<sup>w<sub>c</sub> ×d<sub>s</sub></sup>是卷积矩阵，w<sub>c</sub>是窗口大小，f是非线性函数如tanh，使用不同的W和b构造不同的卷积核，得到句子的n个特征向量。然后将得到的特征进行叠加以构建矩阵 C ∈ R<sup>n×(h−w<sub>c</sub> +1) </sup></p>
+<h3 id="分段最大池化"><a href="#分段最大池化" class="headerlink" title="分段最大池化"></a>分段最大池化</h3><p>和Zeng一样，分段池化后p ∈ R<sup>3n</sup></p>
+<p><img src="/imgs/2020071301/maxpooling.png" srcset="/img/loading.gif" alt="maxpooling"></p>
+<h3 id="句子间最大池化"><a href="#句子间最大池化" class="headerlink" title="句子间最大池化"></a>句子间最大池化</h3><p>本文放松expressed-at-least-once的假设，充分利用句子间的信息。</p>
+<p>新假设：两个实体之间的关系可以明示或隐式地从所有提到这两个实体的句子中推导出来。</p>
+<p>该假设允许从所有相关句子的信息中推理出预测结果。由于这种假设的性质，本文选择跳过句子级的关系提取，直接在实体对级进行预测。</p>
+<p>本文提出使用跨句最大池化来利用这一假设。假设有m个与实体对对齐的句子，p<sub>i</sub><sup>j</sup>表示第j个句子的向量表示的第i个元素。</p>
+<p><img src="/imgs/2020071301/%E8%B7%A8%E5%8F%A5%E5%AD%90%E6%9C%80%E5%A4%A7%E6%B1%A0%E5%8C%96.png" srcset="/img/loading.gif" alt="跨句子最大池化"></p>
+<p>跨句子最大池化将所有句子级表示聚合为实体对级表示g = [g<sub>1</sub> ,g<sub>2</sub> , … ,g<sub>3n</sub>]，该操作</p>
+<ul>
+<li><p>支持直接提取实体对级关系</p>
+</li>
+<li><p>可以从不同的句子中收集信息，使分类器能够利用来自不同句子的信息进行预测</p>
+</li>
+</ul>
+<p>其他方法，如平均池，也可以应用于这个短语，但使用跨句最大池的原因如下:</p>
+<ul>
+<li><p>在实体对级关系提取中，一个特征的多次出现不会提供更多的额外信息。也就是说，一个仅出现一次的特征信号也足以提取关系。这种思维体现在跨句最大池化操作中，即跨句收集每个特征的最大激活水平。</p>
+</li>
+<li><p>相比之下，平均池化是根据句子的数量来计算激活信号的平均值，因此在多次提到的实体对的表示中，用于预测的特征信号可能会被稀释。</p>
+</li>
+</ul>
+<h3 id="多标签关系模型"><a href="#多标签关系模型" class="headerlink" title="多标签关系模型"></a>多标签关系模型</h3><p>首先计算每个标签的置信值</p>
+<p><img src="/imgs/2020071301/%E7%BD%AE%E4%BF%A1%E5%80%BC.png" srcset="/img/loading.gif" alt="置信值"></p>
+<p>再对分数向量o的每个元素应用sigmoid函数，计算各关系的概率。其中M为对齐语句的集合，l为关系标签的数量</p>
+<p><img src="/imgs/2020071301/sigmoid.png" srcset="/img/loading.gif" alt="sigmoid"></p>
+<p>使用二值标签向量y表示实体对之间的真实关系的集合，其中1表示该集合中存在的关系，否则为0。这样，NA(表示实体对之间没有关系)自然地被表示为一个全零向量。</p>
+<p>预测时，给定一个实体对，该模型选择概率超过0.5的关系作为预测标签。如果没有这样的关系，则将NA赋给这个实体对。</p>
+<p>值得注意的是，关系往往不是独立的。例如，如果triple (A, capital, B)存在，另一个triple (A, contains, B)也存在。在本文模型中，通过对所有关系标签使用共享的实体对级表示来处理关系之间的依赖关系。也就是说在分包时不考虑关系类型是否相同，只考虑实体对中的两个实体。</p>
+<h4 id="损失函数"><a href="#损失函数" class="headerlink" title="损失函数"></a>损失函数</h4><p>本文设计了两个多标签建模损失函数，y<sub>i</sub>是标签 i 的真实值:</p>
+<p><img src="/imgs/2020071301/%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B01.png" srcset="/img/loading.gif" alt="损失函数1"></p>
+<p><img src="/imgs/2020071301/%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B02.png" srcset="/img/loading.gif" alt="损失函数2"></p>
+<h3 id="其他设置："><a href="#其他设置：" class="headerlink" title="其他设置："></a>其他设置：</h3><p>损失函数采用Adadelta</p>
+<p>对倒数第二层采用dropout（g中的每一个元素都是通过乘以一个概率p为0的伯努利随机变量随机退出的）</p>
+<p>在测试时，在评分前将学习矩阵w<sub>1</sub>按p(即w<sub>1</sub> = pw<sub>1</sub>)进行缩放</p>
+<p>为了方便比较，参数设置和Zeng的PCNN基本相同</p>
 
             </article>
             <hr>
@@ -276,7 +284,7 @@
                     
                       <a class="hover-with-bg" href="/tags/%E5%A4%9A%E5%AE%9E%E4%BE%8B/">多实例</a>
                     
-                      <a class="hover-with-bg" href="/tags/PCNN/">PCNN</a>
+                      <a class="hover-with-bg" href="/tags/%E5%A4%9A%E6%A0%87%E7%AD%BE/">多标签</a>
                     
                   </div>
                 
@@ -289,18 +297,12 @@
                   <div class="post-prev col-6">
                     
                     
-                      <a href="/2020/07/13/MIMLDS/">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Relation Extraction with Multi-instance Multi-label Convolutional Neural Networks论文笔记</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </div>
                   <div class="post-next col-6">
                     
                     
-                      <a href="/2020/07/11/SPtree/">
-                        <span class="hidden-mobile">End to end relation extraction using lstms on sequences and tree structures论文笔记</span>
+                      <a href="/2020/07/12/PCNNMIL/">
+                        <span class="hidden-mobile">Distant Supervision for Relation Extraction via Piecewise Convolutional Neural Networks论文笔记</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -446,7 +448,7 @@
     var typed = new Typed('#subtitle', {
       strings: [
         '  ',
-        "Distant Supervision for Relation Extraction via Piecewise Convolutional Neural Networks论文笔记&nbsp;",
+        "Relation Extraction with Multi-instance Multi-label Convolutional Neural Networks论文笔记&nbsp;",
       ],
       cursorChar: "_",
       typeSpeed: 70,
