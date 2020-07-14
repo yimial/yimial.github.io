@@ -205,7 +205,7 @@
             
               <p class="note note-info">
                 
-                  本文最后更新于：2020年7月11日 晚上
+                  本文最后更新于：2020年7月14日 下午
                 
               </p>
             
@@ -241,7 +241,7 @@
 <li>在记忆单元内部Dropout，包括i<sub>t</sub>、g<sub>t</sub>、o<sub>t</sub>、c<sub>t</sub>、h<sub>t</sub></li>
 <li>在倒数第二层的全连接隐藏层进行Dropout</li>
 </ul>
-<p>实验表明Dropout LSTM单元对我们的模型是有害的，而其他两种策略可以提高性能。</p>
+<p>实验表明Dropout LSTM单元对本文的模型是有害的，而其他两种策略可以提高性能。</p>
 <h3 id="训练目标"><a href="#训练目标" class="headerlink" title="训练目标"></a>训练目标</h3><p>采用交叉熵来作为损失函数，使用SGD进行优化，min-batch=10</p>
 <p><img src="/imgs/2020071003/%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0.jpg" srcset="/img/loading.gif" alt="损失函数"></p>
 <h3 id="超参数"><a href="#超参数" class="headerlink" title="超参数"></a>超参数</h3><p>作者将word-embedding的维度设置为200，POS、WordNet hyponymy和语法关系embedding的维度设置为50，设置λ为10<sup>−5</sup>。</p>
