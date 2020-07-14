@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.jpg">
+  <link rel="icon" type="image/png" href="/img/favicon.jpg">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="执杭">
+  <meta name="keywords" content="">
+  <title>Jointly extracting relations with class ties via effective deep ranking论文笔记 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/github-gist.min.css" />
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_yg9cfy8wd6.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_pjno9b9zyxs.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script  src="/js/utils.js" ></script>
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>执杭</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" parallax=true
+         style="background: url('/img/post.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+  <div class="mt-3 post-meta">
+    <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+    <time datetime="2020-07-14 10:05">
+      2020年7月14日 上午
+    </time>
+  </div>
+
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      3k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      31
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <div class="post-content mx-auto" id="post">
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2020年7月14日 中午
+                
+              </p>
+            
+            <article class="markdown-body">
+              <blockquote>
+<p>在关系提取中，关系之间的联系是很常见的，我们称之为class tie。独立监督场景中，一个实体元组可能有多个关系事实。利用一个实体对的多个关系之间的class tie将是远程监督关系提取的一个前景。</p>
+</blockquote>
+<p><strong>摘要</strong></p>
+<p>为了有效地利用class tie，本文提出用一个联合模型来完成联合关系提取，该模型集成了卷积神经网络(CNN)和一个通用的两两排名框架，其中引入了三个排名损失函数。</p>
+<p>此外，还提出了一种有效的方法来缓解模型训练中出现的严重类平衡问题。</p>
+<h3 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h3><p>class tie是指关系提取中关系之间的联系，它有两种类型:弱class tie和强class tie。弱class tie主要包括出生地点和居住地，公司的总裁和创始人等关系之间的联系。相反，强class tie意味着关系之间潜在的逻辑蕴含关系，如首都-&gt;城市，而反过来是不成立的。</p>
+<p>如“拿琼贝尼的话来说，她的母亲帕齐·拉姆齐一出生就从未离开过亚特兰大”，这句话中有两个关系，一个是出生地，一个是居住地，有关居住地的信息很难提取，但如果能结合出生地和居住地之间的关系，那么抽取出生地的过程将为居住地的抽取提供信息。</p>
+<p><strong>class tie对远程监督关系抽取非常重要。</strong>一个实体对可能包含多个事实关系，可以利用class tie来增强关系提取，以便在预测未知关系时缩小潜在的搜索空间和减少关系之间的不确定性。</p>
+<p>为了挖掘关系之间的class tie，本文提出对一个实体对中的所有正标签进行联合提取，并考虑正标签和负标签之间的两两连接。通过联合提取两个关系，学习到训练样本中这两个关系的class tie，然后利用这个学习信息从未知关系的实例提取那些由于缺乏信息而无法单独提取出的关系。</p>
+<p>两两排名损失利用正标签与负标签之间的两两联系，采用两两排名的方法使正标签的排名高于负标签，将正标签从负标签中分离出来。</p>
+<p>此外，<strong>结合句子之间的信息</strong>更适合进行联合提取，这样可以从其他句子中获得更多的信息来提取每个关系。</p>
+<h4 id="综上所述"><a href="#综上所述" class="headerlink" title="综上所述"></a>综上所述</h4><p>本文提出了一个统一的模型，将<strong>两两排名与CNN相结合，以挖掘class tie</strong>。受深度学习对句子建模有效性的启发，本文使用CNN对句子进行编码。类似(Santos等人，2015;Lin等人，2016)，本文使用类嵌入来表示关系类型。</p>
+<p>本文引入了两种不同的方法将多个句子组合成一个<strong>包表示向量</strong>，目的是<strong>在句子之间聚合信息</strong>，然后度量了包表示向量与关系类型嵌入在实值空间中的相似性。针对组合句子的两种方法，提出了三种新的两两排名损失函数进行正标签联合提取。</p>
+<p>此外，为了缓解NR (not relation)在训练模型时对<strong>类别平衡的不良影响</strong>，设计在训练过程中<strong>减少NR对损失传播的影响</strong>。</p>
+<p>本文的贡献可以概括如下:</p>
+<ul>
+<li>提出利用class tie来增强关系提取。</li>
+<li>利用深度排名来自动学习class tie，引入了一种有效的深度排名模型，该模型将CNN和两两排名框架相结合，以挖掘class tie。</li>
+<li>提出了一种有效的方法来缓解NR数据不平衡对模型训练的影响。</li>
+</ul>
+<h3 id="相关工作"><a href="#相关工作" class="headerlink" title="相关工作"></a>相关工作</h3><p>Hoffmann和surdeanu通过多实例多标签学习对关系抽取建模，提取重叠关系。虽然他们也提出对关系进行联合提取，但他们只使用单个句子的信息，而不使用其他句子的信息。Han和Sun(2016)尝试使用马尔科夫逻辑模型来捕捉关系标签之间的一致性</p>
+<p>深度学习排名作为一种分类模型被广泛应用于许多问题中。在图像检索中，Zhao等(2015)将深度语义排名应用于多标签图像检索。在文本匹配中，Severyn和Moschitti(2015)采用排名结合deep CNN进行短文本对匹配。在传统的监督关系提取中，Santos等人(2015)设计了一种基于CNN的两两损失函数来提取单标签关系。</p>
+<h2 id="模型"><a href="#模型" class="headerlink" title="模型"></a>模型</h2><h4 id="符号"><a href="#符号" class="headerlink" title="符号"></a>符号</h4><p>定义关系类型 L={1，2，…, C}</p>
+<p>实体对 T = {t<sub>i</sub>}<sub>i=1</sub><sup>M</sup>，</p>
+<p>对齐样本 X={x<sub>i</sub>}<sub>i=1</sub><sup>N</sup>，</p>
+<p>构造数据集：D={（t<sub>i</sub>，L<sub>i</sub>，X<sub>i</sub>）}<sub>i=1</sub><sup>H</sup>，t<sub>i</sub>实体对拥有关系集L<sub>i</sub>，样本集X<sub>i</sub>提到了实体对t<sub>i</sub>。</p>
+<p>给定一个数据（t<sub>k</sub>，L<sub>k</sub>，X<sub>k</sub>），将X<sub>k</sub>由CNN进行编码后将其表示定义为S<sub>k</sub>={s<sub>i</sub>}<sub>i=1</sub><sup>|Xk|</sup></p>
+<p>关系embedding W∈ R<sup>|L|×d</sup>表示关系类型</p>
+<h3 id="使用卷积层计算句子表示"><a href="#使用卷积层计算句子表示" class="headerlink" title="使用卷积层计算句子表示"></a>使用卷积层计算句子表示</h3><h4 id="单词表示"><a href="#单词表示" class="headerlink" title="单词表示"></a>单词表示</h4><ul>
+<li><p>word embedding</p>
+</li>
+<li><p>position embedding</p>
+</li>
+</ul>
+<p>结果：d<sub>w</sub> = d<sub>1</sub> + d<sub>2</sub> ×2</p>
+<h4 id="多核卷积和分段最大池化"><a href="#多核卷积和分段最大池化" class="headerlink" title="多核卷积和分段最大池化"></a>多核卷积和分段最大池化</h4><p>结果o ∈ R<sup>ds∗3</sup></p>
+<p>d<sub>s</sub>是卷积核数量</p>
+<h4 id="非线性层和dropout层"><a href="#非线性层和dropout层" class="headerlink" title="非线性层和dropout层"></a>非线性层和dropout层</h4><p>s = g(o)◦h </p>
+<p>g是非线性函数，本文使用tanh；h是一个伯努利随机向量，p的概率是1。</p>
+<p>此处顺序和之前的Zeng、Jiang等人的研究不同</p>
+<h3 id="使用联合抽取和两两排名损失学习class-tie"><a href="#使用联合抽取和两两排名损失学习class-tie" class="headerlink" title="使用联合抽取和两两排名损失学习class tie"></a>使用联合抽取和两两排名损失学习class tie</h3><p>如上所述，为了学习class tie，本文提出在考虑正标签和负标签两两连接的情况下进行联合提取。为了实现这一目标，本文应用了两两排名。</p>
+<p>此外，为了进行联合提取，还需要结合句子之间的信息。</p>
+<p><img src="/imgs/2020071401/%E6%B5%81%E7%A8%8B.png" srcset="/img/loading.gif" alt="流程"></p>
+<p>具体来说，从下到上，预先传播句子集中的所有信息，为联合提取提供足够的信息；由上至下，结合两两排名损失，联合提取正标签关系，将损失反向传播到CNN，来学习class tie。</p>
+<h4 id="结合句子间信息"><a href="#结合句子间信息" class="headerlink" title="结合句子间信息"></a>结合句子间信息</h4><p>本文提出了两种组合一个包中句子的方法，为联合抽取提供足够的信息。</p>
+<p><strong>第一种方法是平均法</strong>。该方法对所有的句子一视同仁，直接对句子embedding各个维度的值取平均</p>
+<p><img src="/imgs/2020071401/%E5%B9%B3%E5%9D%87%E6%B3%95.png" srcset="/img/loading.gif" alt="平均法"></p>
+<p>其中n为句子数量，s为结合了所有句子嵌入的表示向量。</p>
+<p>由于该方法对所有句子的重要性赋予相等的权重，因此可能会从两个方面带来大量的噪声数据:</p>
+<ul>
+<li><p>错误的标注数据</p>
+</li>
+<li><p>与一个关系类型不相关的对齐样例，因为所有包含相同实体对的句子都会被用于联合构建这个包的表示</p>
+</li>
+</ul>
+<p><strong>第二种是Lin等人(2016)使用的句子级注意力算法</strong>，用来衡量句子的重要性，以缓解标注错误的问题。对于每一个句子，ATT都要通过将该句子与关系类别进行比较来计算权重。</p>
+<p>首先计算一个句子embedding和关系类别之间的相似性</p>
+<p><img src="/imgs/2020071401/ATT%E7%9B%B8%E4%BC%BC%E6%80%A7.png" srcset="/img/loading.gif" alt="ATT相似性"></p>
+<p>e<sub>j</sub>代表句子embedding s<sub>j</sub>和关系类别c之间的相似度，然后使用softmax操作将e缩放到[0,1]</p>
+<p><img src="/imgs/2020071401/ATTsoftmax.png" srcset="/img/loading.gif" alt="ATTsoftmax"></p>
+<p>最后使用如下公式合并s：</p>
+<p><img src="/imgs/2020071401/ATT%E5%8A%A0%E6%9D%83%E5%B9%B3%E5%9D%87.png" srcset="/img/loading.gif" alt="ATT加权平均"></p>
+<h4 id="结合损失来学习class-tie的联合提取"><a href="#结合损失来学习class-tie的联合提取" class="headerlink" title="结合损失来学习class tie的联合提取"></a>结合损失来学习class tie的联合提取</h4><p><strong>分数函数</strong></p>
+<p>首先，给出分数函数来衡量s和关系c之间的相似性。本文使用点积函数来计算把句子s预测为c类的得分。</p>
+<p><img src="/imgs/2020071401/%E5%BE%97%E5%88%86%E5%87%BD%E6%95%B0.png" srcset="/img/loading.gif" alt="得分函数"></p>
+<p>分数函数还有其他选择。Wang等人(2016)提出了一种基于边际的损失函数，通过距离度量s和W<sub>[c]</sub>之间的相似性。由于分数函数在本模型中不是一个重要的问题，于是采用Santos等人(2015)和Lin等人(2016)使用的点积函数作为本模型的分数函数。</p>
+<p><strong>排名损失函数</strong></p>
+<p>两两排名的目的是学习分数函数F(s,c)，以使正标签的排名高于负标签。这个目标可以总结如下</p>
+<p><img src="/imgs/2020071401/%E6%8E%92%E5%90%8D%E6%8D%9F%E5%A4%B1%E7%9B%AE%E6%A0%87.png" srcset="/img/loading.gif" alt="排名损失目标"></p>
+<p>其中，β是控制正标签得分和负标签得分之间的最小边际的边缘因子</p>
+<p>为了关系之间的class tie，本文扩展该目标，使用联合抽取并提出了三个带有组合句变体的排序损失函数。</p>
+<ul>
+<li>with AVE：使用平均法聚合句子时的选择</li>
+</ul>
+<p><img src="/imgs/2020071401/%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B01.png" srcset="/img/loading.gif" alt="损失函数1"></p>
+<p>​    σ+是正边界，σ-是负边界。根据 σ+ − σ−的大小控制正标签的排名高于负标签。实际上，F(s,c<sup>+</sup>)比正边界高，F(s,c<sup>-</sup>)比负边界低。</p>
+<p>​    采用基于mini-bach的随机梯度下降(SGD)来最小化损失函数。选择负类中得分最高的类作为负类c-</p>
+<p><img src="/imgs/2020071401/c-1.png" srcset="/img/loading.gif" alt="c-1"></p>
+<p>​    在每一轮训练中更新一个负类。为了平衡正类和负类之间的损失，在函数的右项前乘以|Lk|，以扩大负类损失</p>
+<ul>
+<li>with ATT：使用注意力法聚合句子时的选择</li>
+</ul>
+<p><img src="/imgs/2020071401/%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B02.png" srcset="/img/loading.gif" alt="损失函数2"></p>
+<p>​    s<sup>c</sup>表示s的注意力权重是由将句子embedding和关系c对比相似度后加权混合得到的。c<sup>- </sup>由以下公式决定，这意味着每一轮训练都更新一个负类</p>
+<p><img src="/imgs/2020071401/c-2.png" srcset="/img/loading.gif" alt="c-2"></p>
+<p>​    对每个正类c<sup>+</sup>，这种方法捕捉多个句子中与类别c<sup>+</sup>最相关的信息来构建s<sup>c<sup>+</sup></sup>，然后控制F(s<sup>c<sup>+</sup></sup> ,c<sup>+</sup> )的排名比F(s<sup>c<sup>+</sup></sup> ,c<sup>-</sup> )高。</p>
+<ul>
+<li>ATT的扩展</li>
+</ul>
+<p>​    根据第二种目标函数,对于每一个c+,我们只选择一个负类来更新参数,它只考虑正类和负类之间的联系,忽视正类之间的联系,所以我们扩展第二种目标函数来通过考虑正类之间的连接关系更好地利用class tie。</p>
+<p><img src="/imgs/2020071401/%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B03.png" srcset="/img/loading.gif" alt="损失函数3"></p>
+<p>​    c<sup>-</sup>的选择</p>
+<p><img src="/imgs/2020071401/c-3.png" srcset="/img/loading.gif" alt="c-3"></p>
+<p>​    s<sup>c*</sup>是根据句子embedding和L中某个c*类的相似度计算的包向量表示，用该表示和所有c<sup>+</sup>类计算得分。从而根据s<sup>c*</sup>更新其他正类的关系类别embedding。通过这种方式，我们的模型可以捕捉和学习正类之间的联系。</p>
+<p>以上三种方法，将一对实体对的所有正标签的loss合并起来进行联合提取（根据实体对划分包），以捕获关系之间的类关联。如果分开进行提取，多个正标签的损失将被分离，与联合提取相比，将得不到足够的正标签之间的关联信息。正标签和正标签之间的关系通过ATT的扩展和正标签联合抽取进行学习，正标签和负标签之间的关系通过σ<sup>+</sup> − σ<sup>−</sup>学习。</p>
+<h3 id="缓解NR的影响"><a href="#缓解NR的影响" class="headerlink" title="缓解NR的影响"></a>缓解NR的影响</h3><p>在关系提取中，数据集总是包含某些不包含关系的分类为NR(not relation)的负样本。数据集中，这种负样本的比例可能非常高，而数据不平衡会严重影响模型训练，导致模型只对比例较高的类别敏感。</p>
+<p>在基于DS的关系提取中，为了减轻NR的影响，本文减少了NR的损失传播，即当关系c为NR时，将其损失设为0。但并不省略NR类的关系类别embedding。相反，如果使用ATT方法进行句子间的信息组合，NR类的关系类别embedding将根据负类的损失（公式的右部分）进行更新。</p>
+<p>损失函数变种3的伪代码：</p>
+<p><img src="/imgs/2020071401/%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B03%E4%BC%AA%E4%BB%A3%E7%A0%81.png" srcset="/img/loading.gif" alt="损失函数3伪代码"></p>
+<h3 id="其他设置"><a href="#其他设置" class="headerlink" title="其他设置"></a>其他设置</h3><p>使用一个word2vec工具 gensim 3在NYT语料库中训练单词嵌入，保留出现超过100次的单词，构建单词词典，用“UNK”来表示其他单词。</p>
+
+            </article>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E5%85%B3%E7%B3%BB%E6%8A%BD%E5%8F%96/">关系抽取</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E8%BF%9C%E7%A8%8B%E7%9B%91%E7%9D%A3/">远程监督</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E5%A4%9A%E5%AE%9E%E4%BE%8B/">多实例</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" target="_blank" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <div class="post-prev col-6">
+                    
+                    
+                  </div>
+                  <div class="post-next col-6">
+                    
+                    
+                      <a href="/2020/07/13/MIMLDS/">
+                        <span class="hidden-mobile">Relation Extraction with Multi-instance Multi-label Convolutional Neural Networks论文笔记</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </div>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <div class="comments" id="comments">
+                
+                
+  <div id="vcomments"></div>
+  <script type="text/javascript">
+    function loadValine() {
+      addScript('https://cdn.staticfile.org/valine/1.4.14/Valine.min.js', function () {
+        new Valine({
+          el: "#vcomments",
+          app_id: "KFUt1PtYt65wARildGEwd2Wc-gzGzoHsz",
+          app_key: "H1drDYV5zLpzLpyzCOP4moVf",
+          placeholder: "请讲",
+          path: window.location.pathname,
+          avatar: "retro",
+          meta: ["nick","mail"],
+          pageSize: "10",
+          lang: "zh-CN",
+          highlight: false,
+          recordIP: true,
+          serverURLs: "https://kfut1pty.lc-cn-n1-shared.com",
+        });
+      });
+    }
+    createObserver(loadValine, 'vcomments');
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="https://valine.js.org" target="_blank" rel="nofollow noopener noopener">comments
+      powered by Valine.</a></noscript>
+
+
+              </div>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener">
+        <span>Fluid</span></a>
+    </div>
+    
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: 'article.markdown-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 0,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "Jointly extracting relations with class ties via effective deep ranking论文笔记&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
