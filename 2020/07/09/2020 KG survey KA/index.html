@@ -17,7 +17,7 @@
   <meta name="description" content="">
   <meta name="author" content="执杭">
   <meta name="keywords" content="">
-  <title>A Survey on Knowledge Graphs: Representation, Acquisition and Applications的知识获取章节概览及相关论文列表 - Hexo</title>
+  <title>A Survey on Knowledge Graphs: Representation, Acquisition and Applications的知识获取章节笔记 - Hexo</title>
 
   <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
 
@@ -163,7 +163,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      3.8k 字
+      3.9k 字
     </span>
   
 
@@ -205,7 +205,7 @@
             
               <p class="note note-info">
                 
-                  本文最后更新于：2020年7月13日 中午
+                  本文最后更新于：2020年7月15日 上午
                 
               </p>
             
@@ -243,9 +243,9 @@
 </blockquote>
 <h4 id="多实例学习以一个句子包作为输入，预测实体对之间的关系"><a href="#多实例学习以一个句子包作为输入，预测实体对之间的关系" class="headerlink" title="多实例学习以一个句子包作为输入，预测实体对之间的关系"></a>多实例学习以一个句子包作为输入，预测实体对之间的关系</h4><pre><code>• D. Zeng, K. Liu, Y. Chen, and J. Zhao, “Distant supervision for relation extraction via piecewise convolutional neural networks,”in EMNLP, 2015, pp. 1753–1762.与传统CNN[Zeng]相比，PCNN能够更有效地捕获实体对内部的结构信息。根据实体位置分段的最大池化
 • X. Jiang, Q. Wang, P. Li, and B. Wang, “Relation extraction with multi-instance multi-label convolutional neural networks,” in COLING, 2016, pp. 1471–1480.MIMLCNN进一步将其扩展到多标签学习，利用跨句最大池化进行特征选择。
-• H. Ye, W. Chao, Z. Luo, and Z. Li, “Jointly extracting relations with class ties via effective deep ranking,” in ACL, vol. 1, 2017, pp.1810–1820.利用class ties进行
-• W. Zeng, Y. Lin, Z. Liu, and M. Sun, “Incorporating relation paths in neural relation extraction,” in EMNLP, 2017, pp. 1768–1777.利用关系路径</code></pre><blockquote>
-<p><a href="https://yimial.github.io/2020/07/12/PCNNMIL/">Zeng</a><br><a href="https://yimial.github.io/2020/07/13/MIMLDS/">Jiang</a></p>
+• H. Ye, W. Chao, Z. Luo, and Z. Li, “Jointly extracting relations with class ties via effective deep ranking,” in ACL, vol. 1, 2017, pp.1810–1820.利用class ties中关系之间的关联进行多实例远程监督关系提取
+• W. Zeng, Y. Lin, Z. Liu, and M. Sun, “Incorporating relation paths in neural relation extraction,” in EMNLP, 2017, pp. 1768–1777.利用实例之间的关系路径从多个实例联合提取关系</code></pre><blockquote>
+<p><a href="https://yimial.github.io/2020/07/12/PCNNMIL/">Zeng</a><br><a href="https://yimial.github.io/2020/07/13/MIMLDS/">Jiang</a><br><a href="https://yimial.github.io/2020/07/14/classtie/">Ye</a><br><a href="https://zhuanlan.zhihu.com/p/31056561" target="_blank" rel="noopener">Zeng</a></p>
 </blockquote>
 <h4 id="RNNs也被引入"><a href="#RNNs也被引入" class="headerlink" title="RNNs也被引入"></a>RNNs也被引入</h4><pre><code>• Y. Xu, L. Mou, G. Li, Y. Chen, H. Peng, and Z. Jin, “Classifying relations via long short term memory networks along shortest dependency paths,” in EMNLP, 2015, pp. 1785–1794.采用多通道LSTM，利用实体对之间的最短依赖路径
 • M. Miwa and M. Bansal, “End-to-end relation extraction using lstms on sequences and tree structures,” in ACL, vol. 1, 2016, pp.1105–1116.Miwa等基于依赖树的序列和树结构LSTM
@@ -257,10 +257,16 @@
 • Y. Lin, S. Shen, Z. Liu, H. Luan, and M. Sun, “Neural relation extraction with selective attention over instances,” in ACL, vol. 1,2016, pp. 2124–2133.对多个实例的选择性注意力，以减轻噪声实例的影响
 • G. Ji, K. Liu, S. He, and J. Zhao, “Distant supervision for relation extraction with sentence-level attention and entity descriptions,”in AAAI, 2017, pp. 3060–3066.APCNN引入了PCNN的实体描述和句子级注意
 • X. Han, P. Yu, Z. Liu, M. Sun, and P. Li, “Hierarchical relation extraction with coarse-to-fine grained attention,” in EMNLP, 2018,pp. 2236–2245.HATT提出分层选择性注意力，通过连接每个层级的注意力表示来捕获关系的层次
-• P. Zhou, W. Shi, J. Tian, Z. Qi, B. Li, H. Hao, and B. Xu, “Attention-based bidirectional long short-term memory networks for relation classification,” in ACL, vol. 2, 2016, pp. 207–212.Att-BLSTM没有使用基于CNN的句子编码器，而是使用BiLSTM提出了词级注意力</code></pre><h3 id="4-3-3-图卷积网络"><a href="#4-3-3-图卷积网络" class="headerlink" title="4.3.3 图卷积网络"></a>4.3.3 图卷积网络</h3><p><strong><em>GCNs用于对句子的依赖树进行编码，或学习KGEs来利用关系知识进行句子编码</em></strong>  </p>
+• P. Zhou, W. Shi, J. Tian, Z. Qi, B. Li, H. Hao, and B. Xu, “Attention-based bidirectional long short-term memory networks for relation classification,” in ACL, vol. 2, 2016, pp. 207–212.Att-BLSTM没有使用基于CNN的句子编码器，而是使用BiLSTM提出了词级注意力</code></pre><blockquote>
+<p><a href="https://yimial.github.io/2020/07/15/HATT/">Han</a>    </p>
+</blockquote>
+<h3 id="4-3-3-图卷积网络"><a href="#4-3-3-图卷积网络" class="headerlink" title="4.3.3 图卷积网络"></a>4.3.3 图卷积网络</h3><p><strong><em>GCNs用于对句子的依赖树进行编码，或学习KGEs来利用关系知识进行句子编码</em></strong>  </p>
 <pre><code>• Y. Zhang, P. Qi, and C. D. Manning, “Graph convolution over pruned dependency trees improves relation extraction,” in EMNLP, 2018, pp. 2205–2215.基于path-centric剪枝后的句子依赖树的上下文GCN模型
 • Z. Guo, Y. Zhang, and W. Lu, “Attention guided graph convolutional networks for relation extraction,” in ACL, 2019, pp. 241–251.AGGCN也在依赖树上应用GCN，但采用软加权方式的多头注意力方式进行边的选择
-• N. Zhang, S. Deng, Z. Sun, G. Wang, X. Chen, W. Zhang, and H. Chen, “Long-tail relation extraction via knowledge graph embeddings and graph convolution networks,” in NAACL, 2019,pp. 3016–3025.将GCN用于知识图谱中关系的embedding，从而实现基于语句的关系抽取。</code></pre><h3 id="4-3-4-对抗训练"><a href="#4-3-4-对抗训练" class="headerlink" title="4.3.4 对抗训练"></a>4.3.4 对抗训练</h3><p><strong><em>在多标记多示例学习中，对抗训练被用于为基于CNN和RNN的关系抽取中的词embedding增加对抗噪声</em></strong>  </p>
+• N. Zhang, S. Deng, Z. Sun, G. Wang, X. Chen, W. Zhang, and H. Chen, “Long-tail relation extraction via knowledge graph embeddings and graph convolution networks,” in NAACL, 2019,pp. 3016–3025.将GCN用于知识图谱中关系的embedding，根据KG嵌入和类层次结构实现基于语句的关系抽取。</code></pre><blockquote>
+<p><a href="https://blog.csdn.net/weixin_40485502/article/details/104326614" target="_blank" rel="noopener">Zhang</a>    </p>
+</blockquote>
+<h3 id="4-3-4-对抗训练"><a href="#4-3-4-对抗训练" class="headerlink" title="4.3.4 对抗训练"></a>4.3.4 对抗训练</h3><p><strong><em>在多标记多示例学习中，对抗训练被用于为基于CNN和RNN的关系抽取中的词embedding增加对抗噪声</em></strong>  </p>
 <pre><code>• Y. Wu, D. Bamman, and S. Russell, “Adversarial training for relation extraction,” in EMNLP, 2017, pp. 1778–1783.
 • P. Qin, X. Weiran, and W. Y. Wang, “DSGAN: Generative adversarial training for distant supervision relation extraction,” in ACL,vol. 1, 2018, pp. 496–505.DSGAN通过学习一个语句级true position的生成器和一个使生成器的true position概率最小化的识别器来去除远程监督关系抽取中的噪声</code></pre><h3 id="4-3-5-强化学习"><a href="#4-3-5-强化学习" class="headerlink" title="4.3.5 强化学习"></a>4.3.5 强化学习</h3><p>近年来，通过用策略网络训练实例选择器的方式将强化学习集成到神经关系抽取中。基于强化学习的NRE的优点是关系抽取是 model-agnostic的。因此，它可以很容易地适应于任何神经结构，以有效地提取关系。</p>
 <pre><code>• P. Qin, W. Xu, and W. Y. Wang, “Robust distant supervision relation extraction via deep reinforcement learning,” in ACL, vol. 1,2018, pp. 2137–2147 提出训练基于策略的句子关系分类器的RL代理将假阳性实例重新分布到负样本中，以减轻噪声数据的影响。以F1得分为评价指标，采用基于F1得分的性能变化作为策略网络的奖励
@@ -479,7 +485,7 @@
     var typed = new Typed('#subtitle', {
       strings: [
         '  ',
-        "A Survey on Knowledge Graphs: Representation, Acquisition and Applications的知识获取章节概览及相关论文列表&nbsp;",
+        "A Survey on Knowledge Graphs: Representation, Acquisition and Applications的知识获取章节笔记&nbsp;",
       ],
       cursorChar: "_",
       typeSpeed: 70,
