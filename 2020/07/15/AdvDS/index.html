@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.jpg">
+  <link rel="icon" type="image/png" href="/img/favicon.jpg">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="执杭">
+  <meta name="keywords" content="">
+  <title>Adversarial Training for Relation Extraction论文笔记 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/github-gist.min.css" />
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_yg9cfy8wd6.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_pjno9b9zyxs.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script  src="/js/utils.js" ></script>
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>执杭</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" parallax=true
+         style="background: url('/img/post.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+  <div class="mt-3 post-meta">
+    <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+    <time datetime="2020-07-15 17:33">
+      2020年7月15日 下午
+    </time>
+  </div>
+
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.2k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      12
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <div class="post-content mx-auto" id="post">
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2020年7月16日 下午
+                
+              </p>
+            
+            <article class="markdown-body">
+              <blockquote>
+<p>对抗训练是通过针对训练数据生成对抗性噪声来使分类算法更加规范化的一种方法。本文采用对抗训练来在多实例多标签学习框架中提取关系。通过在两个不同的数据集上评估各种神经网络架构，实验结果表明，对抗训练对于CNN和RNN模型都是有效的，可以显著提高预测关系的精度。</p>
+</blockquote>
+<p>对抗性样例是通过在原始数据中<strong>加入小扰动形式的噪声</strong>而产生的样例，这些样例对人类来说往往难以区分，但会极大地增加深度模型中产生的损失。对抗性训练是一种通过鼓励神经网络正确地分类未修改的样本和被扰动的样本的方式来规范化深度模型的技术，在实践中不仅增强了神经网络的<strong>鲁棒性</strong>，还提高了其<strong>通用性</strong>。</p>
+<p>为了评估对抗性训练提取关系的有效性，本文在两个不同的数据集将其应用于两个不同的网络结构。</p>
+<h2 id="模型"><a href="#模型" class="headerlink" title="模型"></a>模型</h2><p><img src="G:%5Ca_my_folder%5CmyBlog2020%5CBlog%5Csource%5Cimgs%5C2020071501%5C%E6%A8%A1%E5%9E%8B.jpg" srcset="/img/loading.gif" alt="模型"></p>
+<h3 id="MIML"><a href="#MIML" class="headerlink" title="MIML"></a>MIML</h3><p>为每个实体对，构造一个文本句子集。根据给定的提及句子集预测给定的R个关系的概率。</p>
+<p>由于一个实体对可能没有关系，本文将一个特殊的关系NA引入到标签集，再简单地假设每个实体对至少存在一个关系。在评估时，忽略NA关系预测的概率。</p>
+<h3 id="神经网络架构"><a href="#神经网络架构" class="headerlink" title="神经网络架构"></a>神经网络架构</h3><h4 id="输入表示"><a href="#输入表示" class="headerlink" title="输入表示"></a>输入表示</h4><ul>
+<li><p>对于每个句子xi，使用预先训练好的单词嵌入来将每个单词标记投影到dw维空间中。</p>
+</li>
+<li><p>对于位置信息，为每个单词w引入一个额外的特征向量p<sup> (w)</sup><sub>i</sub>来编码实体的位置</p>
+<ul>
+<li>一种选择是位置嵌入：对于每个单词w，计算其到两个实体的相对距离，并将距离嵌入到两个d<sub>p</sub>维向量中，然后将其拼接为p<sup> (w)</sup><sub>i</sub>。位置嵌入在模型中引入了额外的变量，降低了训练速递。由于CNN的空间不变性，位置嵌入对于PCNN来说至关重要，于是使用这种位置信息。</li>
+<li>一种更简单的选择是指标编码：当一个单词w是一个实体时，生成一个d<sub>p</sub>维的1向量，反之则生成一个0向量。对于RNN神经网络，位置嵌入的帮助不大(可能是因为RNN神经网络有能力利用时间依赖信息)，所以采用指标编码代替。</li>
+</ul>
+</li>
+</ul>
+<h4 id="句子编码器"><a href="#句子编码器" class="headerlink" title="句子编码器"></a>句子编码器</h4><p>对于一个句子，对其向量表示应用一个非线性变换，来构造特征向量si=f(xi ; θ)。</p>
+<ul>
+<li><p>对于PCNN</p>
+<ul>
+<li>采用窗口大小为3的卷积核和d<sub>s</sub>个卷积核，然后使用分段maxpooling和ReLU作为激活函数，最终得到3·d<sub>s</sub>维的特征向量s<sub>i</sub></li>
+</ul>
+</li>
+<li><p>对于GRU</p>
+<ul>
+<li>采用隐藏单元大小为d<sub>s</sub>的双向GRU，并将前向和后向RNN的最后一步隐藏状态拼接为2·d<sub>s</sub>维的特征向量s<sub>i</sub>。</li>
+</ul>
+</li>
+</ul>
+<h4 id="选择性注意"><a href="#选择性注意" class="headerlink" title="选择性注意"></a>选择性注意</h4><p>对每个关系r，通过计算句子集的加权平均软选择一个注意力句子s<sub>r</sub>。s<sub>r</sub> = Σ<sub>i</sub>α<sub>i</sub><sup>r</sup> s<sub>i</sub>。α<sup>r</sup>表示关系r的注意力权重。使用查询向量q<sub>r</sub>计算。q<sub>r</sub>可以看作关系r的关系embedding表示，与其他模型参数共同学习。</p>
+<p><img src="G:%5Ca_my_folder%5CmyBlog2020%5CBlog%5Csource%5Cimgs%5C2020071501%5C%E9%80%89%E6%8B%A9%E6%80%A7%E6%B3%A8%E6%84%8F1.png" srcset="/img/loading.gif" alt="选择性注意1"></p>
+<p><img src="G:%5Ca_my_folder%5CmyBlog2020%5CBlog%5Csource%5Cimgs%5C2020071501%5C%E9%80%89%E6%8B%A9%E6%80%A7%E6%B3%A8%E6%84%8F2.png" srcset="/img/loading.gif" alt="选择性注意2"></p>
+<h4 id="损失函数"><a href="#损失函数" class="headerlink" title="损失函数"></a>损失函数</h4><p>对一个实体对，通过P(r|X; θ) = softmax(As<sub>r</sub>+b)计算关系r的概率。A是投影矩阵。</p>
+<p>对于多标签，假设X集中存在K个关系r<sub>1</sub>, . . . , r<sub>K</sub>。简单地对所有这些关系标签的负对数概率求和就得到了最终的损失函数。</p>
+<p><img src="G:%5Ca_my_folder%5CmyBlog2020%5CBlog%5Csource%5Cimgs%5C2020071501%5C%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0.png" srcset="/img/loading.gif" alt="损失函数"></p>
+<h4 id="Dropout"><a href="#Dropout" class="headerlink" title="Dropout"></a>Dropout</h4><p>为了使参数正则化，本文将Dropout应用于单词嵌入和句子特征向量s<sub>i</sub>。注意，本文不在位置嵌入p<sub>i</sub>上执行dropout。</p>
+<h3 id="对抗训练"><a href="#对抗训练" class="headerlink" title="对抗训练"></a>对抗训练</h3><p>对抗性训练(AT)是一种正则化分类器的方法，通过计算损失函数的梯度方向来提高模型对最坏情况小扰动的鲁棒性。AT产生连续的扰动，因此本文在单词嵌入层添加对抗的噪声。</p>
+<p>也就是说，X是输入数据，V是embedding矩阵，AT向V添加了一个小扰动e<sub>adv</sub>，优化以下目标，^θ表示θ的当前值的固定副本</p>
+<p><img src="G:%5Ca_my_folder%5CmyBlog2020%5CBlog%5Csource%5Cimgs%5C2020071501%5C%E5%AF%B9%E6%8A%97%E6%8D%9F%E5%A4%B1.png" srcset="/img/loading.gif" alt="对抗损失"></p>
+<p>为了近似计算e<sub>adv</sub>，Goodfellow等人提出在X附近线性化L(X+e;^θ)，||g||表示X中的所有句子的所有单词上的梯度范数</p>
+<p><img src="G:%5Ca_my_folder%5CmyBlog2020%5CBlog%5Csource%5Cimgs%5C2020071501%5Ceadv.png" srcset="/img/loading.gif" alt="eadv"></p>
+<p>此外，对于实体位置，不对特征向量p进行扰动</p>
+
+            </article>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E5%85%B3%E7%B3%BB%E6%8A%BD%E5%8F%96/">关系抽取</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E8%BF%9C%E7%A8%8B%E7%9B%91%E7%9D%A3/">远程监督</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E5%A4%9A%E5%AE%9E%E4%BE%8B/">多实例</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E5%AF%B9%E6%8A%97%E8%AE%AD%E7%BB%83/">对抗训练</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" target="_blank" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <div class="post-prev col-6">
+                    
+                    
+                  </div>
+                  <div class="post-next col-6">
+                    
+                    
+                      <a href="/2020/07/15/HATT/">
+                        <span class="hidden-mobile">Hierarchical Relation Extraction with Coarse-to-Fine Grained Attention论文笔记</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </div>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <div class="comments" id="comments">
+                
+                
+  <div id="vcomments"></div>
+  <script type="text/javascript">
+    function loadValine() {
+      addScript('https://cdn.staticfile.org/valine/1.4.14/Valine.min.js', function () {
+        new Valine({
+          el: "#vcomments",
+          app_id: "KFUt1PtYt65wARildGEwd2Wc-gzGzoHsz",
+          app_key: "H1drDYV5zLpzLpyzCOP4moVf",
+          placeholder: "请讲",
+          path: window.location.pathname,
+          avatar: "retro",
+          meta: ["nick","mail"],
+          pageSize: "10",
+          lang: "zh-CN",
+          highlight: false,
+          recordIP: true,
+          serverURLs: "https://kfut1pty.lc-cn-n1-shared.com",
+        });
+      });
+    }
+    createObserver(loadValine, 'vcomments');
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="https://valine.js.org" target="_blank" rel="nofollow noopener noopener">comments
+      powered by Valine.</a></noscript>
+
+
+              </div>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener">
+        <span>Fluid</span></a>
+    </div>
+    
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: 'article.markdown-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 0,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "Adversarial Training for Relation Extraction论文笔记&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

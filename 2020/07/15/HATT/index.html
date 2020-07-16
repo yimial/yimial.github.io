@@ -225,7 +225,7 @@
 </blockquote>
 <h3 id="相关研究"><a href="#相关研究" class="headerlink" title="相关研究"></a>相关研究</h3><p>关系层次揭示了关系之间丰富的相关性。事实上，McCallum等人(1998)已经利用类的层次结构来改进分类模型，并启发了许多后来的模型。此外，KGs中实体的层次信息也曾被利用，并已证明对模型增强有效。</p>
 <p>与目前重点关注实体的层次结构和直接利用层次信息作为一个简单的特征的层次模型不同，本文结合了关系层次结构来构建一个从粗到细粒度的分层注意力方案，以提高RE性能。与现有的RE模型相比，本文的模型可以利用关系之间的相关性，更好地识别包含信息的实例，尤其是长尾关系，可以通过从与他们相关的高频关系中获取知识。</p>
-<h2 id="模型"><a href="#模型" class="headerlink" title="模型"></a>模型</h2><h4 id="符号表示："><a href="#符号表示：" class="headerlink" title="符号表示："></a>符号表示：</h4><p>KG表示为G = {E, R, F}，其中E, R, F分别表示实体、关系和实例的集合。</p>
+<h2 id="模型"><a href="#模型" class="headerlink" title="模型"></a>模型</h2><h4 id="符号表示"><a href="#符号表示" class="headerlink" title="符号表示"></a>符号表示</h4><p>KG表示为G = {E, R, F}，其中E, R, F分别表示实体、关系和实例的集合。</p>
 <p>(h, r, t) ∈F表示h∈E和t∈E之间存在关系r∈R。</p>
 <p>遵循MIL设置，将整个实例集拆分为多个实体对包{S<sub>h1,t1</sub>, S<sub>h2,t2</sub>，…}。每个包S<sub>hi,ti</sub>包含多个实例{s<sub>1</sub>, s<sub>2</sub>，…}，这些实例均同时提到实体h<sub>i</sub>和t<sub>i</sub>。远程监督机制将上述实体对的对应关系标注在包上。</p>
 <p>这些包中的每个实例s都表示为一个单词序列s = {w<sub>1</sub>, w<sub>2</sub>， . .}。</p>
@@ -238,7 +238,7 @@
 <p>接下来估计r<sub>h,t</sub>对每个关系r∈R的概率，即h和t之间是否存在特定的r关系，其中o = Mr<sub>h,t</sub>，M是计算关系分数的表示矩阵。</p>
 <h3 id="句子编码器"><a href="#句子编码器" class="headerlink" title="句子编码器"></a>句子编码器</h3><h4 id="输入层"><a href="#输入层" class="headerlink" title="输入层"></a>输入层</h4><p>句子编码器的输入层将单词的语义信息和相对位置信息嵌入到单词的输入embedding中</p>
 <p>最后得到的单词w<sub>i</sub>的输入embedding为x<sub>i</sub>∈ R<sup>k<sub>i</sub></sup> (k<sub>i</sub> = k<sub>w</sub> + k<sub>p</sub> × 2)</p>
-<h4 id="编码层："><a href="#编码层：" class="headerlink" title="编码层："></a>编码层：</h4><p>编码层的目的是将给定实例的输入embedding组成相应的实例embedding。选择CNN和maxpooling作为编码层的网络。反正分层注意力可以适应于各种编码架构。</p>
+<h4 id="编码层"><a href="#编码层" class="headerlink" title="编码层"></a>编码层</h4><p>编码层的目的是将给定实例的输入embedding组成相应的实例embedding。选择CNN和maxpooling作为编码层的网络。反正分层注意力可以适应于各种编码架构。</p>
 <p>PCNN的公式如下，它是采用卷积核来获得隐藏embedding；然后，对隐藏embedding应用分段最大池化，最后对各段embedding进行拼接。</p>
 <h3 id="分层注意力机制"><a href="#分层注意力机制" class="headerlink" title="分层注意力机制"></a>分层注意力机制</h3><p>给定实体对(h, t)及其实例包S<sub>h,t</sub> = {s<sub>1</sub>, s<sub>2</sub>，…， s<sub>m</sub>}，使用句子编码器获得实例embedding {<strong>s<sub>1</sub>, s<sub>2</sub>，…， s<sub>m</sub></strong>}。然后对它们应用分层选择性注意力得到文本关系表示r<sub>h,t</sub>来提取关系。</p>
 <p><strong>普通选择注意力机制</strong></p>
@@ -310,6 +310,12 @@
                 <div class="post-prevnext row">
                   <div class="post-prev col-6">
                     
+                    
+                      <a href="/2020/07/15/AdvDS/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Adversarial Training for Relation Extraction论文笔记</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
                     
                   </div>
                   <div class="post-next col-6">
