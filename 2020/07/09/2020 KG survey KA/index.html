@@ -205,7 +205,7 @@
             
               <p class="note note-info">
                 
-                  本文最后更新于：2020年7月15日 上午
+                  本文最后更新于：2020年7月17日 晚上
                 
               </p>
             
@@ -268,7 +268,10 @@
 </blockquote>
 <h3 id="4-3-4-对抗训练"><a href="#4-3-4-对抗训练" class="headerlink" title="4.3.4 对抗训练"></a>4.3.4 对抗训练</h3><p><strong><em>在多标记多示例学习中，对抗训练被用于为基于CNN和RNN的关系抽取中的词embedding增加对抗噪声</em></strong>  </p>
 <pre><code>• Y. Wu, D. Bamman, and S. Russell, “Adversarial training for relation extraction,” in EMNLP, 2017, pp. 1778–1783.
-• P. Qin, X. Weiran, and W. Y. Wang, “DSGAN: Generative adversarial training for distant supervision relation extraction,” in ACL,vol. 1, 2018, pp. 496–505.DSGAN通过学习一个语句级true position的生成器和一个使生成器的true position概率最小化的识别器来去除远程监督关系抽取中的噪声</code></pre><h3 id="4-3-5-强化学习"><a href="#4-3-5-强化学习" class="headerlink" title="4.3.5 强化学习"></a>4.3.5 强化学习</h3><p>近年来，通过用策略网络训练实例选择器的方式将强化学习集成到神经关系抽取中。基于强化学习的NRE的优点是关系抽取是 model-agnostic的。因此，它可以很容易地适应于任何神经结构，以有效地提取关系。</p>
+• P. Qin, X. Weiran, and W. Y. Wang, “DSGAN: Generative adversarial training for distant supervision relation extraction,” in ACL,vol. 1, 2018, pp. 496–505.DSGAN通过学习一个语句级true position的生成器和一个使生成器的true position概率最小化的识别器来去除远程监督关系抽取中的噪声</code></pre><blockquote>
+<p><a href="https://yimial.github.io/2020/07/15/AdvDS/">Wu</a><br><a href="https://yimial.github.io/2020/07/16/DSGAN/">Qin</a></p>
+</blockquote>
+<h3 id="4-3-5-强化学习"><a href="#4-3-5-强化学习" class="headerlink" title="4.3.5 强化学习"></a>4.3.5 强化学习</h3><p>近年来，通过用策略网络训练实例选择器的方式将强化学习集成到神经关系抽取中。基于强化学习的NRE的优点是关系抽取是 model-agnostic的。因此，它可以很容易地适应于任何神经结构，以有效地提取关系。</p>
 <pre><code>• P. Qin, W. Xu, and W. Y. Wang, “Robust distant supervision relation extraction via deep reinforcement learning,” in ACL, vol. 1,2018, pp. 2137–2147 提出训练基于策略的句子关系分类器的RL代理将假阳性实例重新分布到负样本中，以减轻噪声数据的影响。以F1得分为评价指标，采用基于F1得分的性能变化作为策略网络的奖励
 • X. Zeng, S. He, K. Liu, and J. Zhao, “Large scaled relation  extraction with reinforcement learning,” in AAAI, 2018, pp. 5658–5665.和J. Feng, M. Huang, L. Zhao, Y. Yang, and X. Zhu, “Reinforcement  learning for relation classification from noisy data,” in AAAI, 2018,  pp. 5779–5786.提出了其他的奖励策略，
 • R. Takanobu, T. Zhang, J. Liu, and M. Huang, “A hierarchical  framework for relation extraction with reinforcement learning,”  in AAAI, vol. 33, 2019, pp. 7072–707 提出了一个高级关系检测和低级实体提取的层次策略学习框架</code></pre><h3 id="4-3-6-其他进展"><a href="#4-3-6-其他进展" class="headerlink" title="4.3.6 其他进展"></a>4.3.6 其他进展</h3><pre><code>• Y. Huang and W. Y. Wang, “Deep residual learning for weakly-  supervised relation extraction,” in EMNLP, 2017, pp. 1803–1807.将深度残差学习应用到噪声关系提取中，发现9层cnn的性能得到了提高。
