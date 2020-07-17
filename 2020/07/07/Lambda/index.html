@@ -210,8 +210,8 @@
               </p>
             
             <article class="markdown-body">
-              <html><head></head><body><h3 id="什么是Lambda架构？">什么是Lambda架构？<a class="post-anchor" href="#什么是Lambda架构？"></a></h3><p>Nathan Marz根据他在Backtype和Twitter从事分布式数据处理系统工作的经验，提出了Lambda架构(LA)这个术语，用于通用的、可伸缩的、容错的数据处理架构。<br>LA旨在满足对具有容错性(包括硬件故障和人为错误)的健壮系统的需求，它能够广泛服务于各种工作负载和用例，并且满足了低延迟读取和更新的需求。该系统应该是线性可伸缩的，并且应该向外扩展（横向扩展）而不是向上扩展（纵向扩展）。</p>
-<p><a href="http://lambda-architecture.net/img/la-overview_small.png" target="_blank" rel="noopener" data-caption="Lambda架构" data-fancybox="images"><img src="http://lambda-architecture.net/img/la-overview_small.png" srcset="/img/loading.gif" alt="Lambda架构"></a></p>
+              <h3 id="什么是Lambda架构？"><a href="#什么是Lambda架构？" class="headerlink" title="什么是Lambda架构？"></a>什么是Lambda架构？</h3><p>Nathan Marz根据他在Backtype和Twitter从事分布式数据处理系统工作的经验，提出了Lambda架构(LA)这个术语，用于通用的、可伸缩的、容错的数据处理架构。<br>LA旨在满足对具有容错性(包括硬件故障和人为错误)的健壮系统的需求，它能够广泛服务于各种工作负载和用例，并且满足了低延迟读取和更新的需求。该系统应该是线性可伸缩的，并且应该向外扩展（横向扩展）而不是向上扩展（纵向扩展）。</p>
+<p><img src="http://lambda-architecture.net/img/la-overview_small.png" srcset="/img/loading.gif" alt="Lambda架构"></p>
 <ol>
 <li>所有进入系统的数据都被发送到batch layer和speed layer进行处理。</li>
 <li>batch layer有两个功能:(i)管理主数据集(一个不可变的、只追加的原始数据集)，(ii)预计算批处理视图。</li>
@@ -219,10 +219,10 @@
 <li>speed layer补偿了serving layer更新的高延迟问题，并且只处理最近的数据。</li>
 <li>任何传入的查询都可以通过合并来自批处理视图和实时视图的结果来回答。</li>
 </ol>
-<h3 id="组件">组件<a class="post-anchor" href="#组件"></a></h3><p>批处理组件：处理框架  </p>
+<h3 id="组件"><a href="#组件" class="headerlink" title="组件"></a>组件</h3><p>批处理组件：处理框架  </p>
 <p>服务组件：合并/低延迟数据库  </p>
 <p>速度组件：流处理框架、基于云计算的offerings、更多资源（流处理、机器学习、Storm）</p>
-</body></html>
+
             </article>
             <hr>
             <div>
